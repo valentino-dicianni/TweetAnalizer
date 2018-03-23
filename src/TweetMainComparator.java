@@ -5,12 +5,14 @@ public class TweetMainComparator {
     public static void main(String[] args) {
 
         TweetReader t = new TweetReader();
-        TweetTokenizer tk = new TweetTokenizer(t.readTweets("corpus/tweet"), "stoplists/ita.txt");
+        TweetDictionary td = new TweetDictionary();
+        TweetTokenizer tk = new TweetTokenizer(t.readTweets("corpus/tweet"), "stoplists/ita.txt", td);
         ArrayList<TweetTokenizer.TokenList> tokenCorpus = tk.tokenizeCorpus();
 
-        for(TweetTokenizer.TokenList tl: tokenCorpus){
-            System.out.println(tl.toString());
+        tk.printTokenizedCorpus();
 
-        }
+        //td.printDictionary();
+
+
     }
 }

@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class TweetTokenizer {
-    private HashSet<String> corpus;
     private ArrayList<String> stopwords = new ArrayList<>();
-    private ArrayList<TokenList> corpusTokenized = new ArrayList<>();
+    private HashSet<String> corpus;
+    private ArrayList<TokenList> corpusTokenized = new ArrayList<>(); //per eliminare doppioni
+    private TweetDictionary dictionary;
 
 
-    TweetTokenizer(HashSet<String> tweets, String stopPath){
+    TweetTokenizer(HashSet<String> tweets, String stopPath, TweetDictionary dictionary){
         this.corpus = tweets;
+        this.dictionary = dictionary;
         getStopwords(stopPath);
+
     }
 
     private void getStopwords(String path) {
@@ -37,8 +40,10 @@ public class TweetTokenizer {
             for(String token : tokens){
                 if(!isLink(token) && !isStopword(token) && !isCitation(token) ){
                     String res = removePunctuation(token);
-                    if(!isStopword(res))
+                    if(!isStopword(res)){
                         list.addToken(res);
+                        dictionary.putWord(res);
+                    }
                 }
 
             }
@@ -63,6 +68,11 @@ public class TweetTokenizer {
         String rep = str.replaceAll("[^a-z \\sA-Z \\s0-9]","");
         return rep.toLowerCase();
     }
+    public void printTokenizedCorpus() {
+        for(TokenList tl : corpusTokenized){
+            System.out.println(tl.toString() );
+        }
+    }
 
     public class TokenList {
         ArrayList<String> tokens  = new ArrayList<>();
@@ -73,11 +83,11 @@ public class TweetTokenizer {
 
         @Override
         public String toString() {
-            String list ="TOKEN LIST: ";
+            StringBuilder list = new StringBuilder("TOKEN LIST: ");
             for(String token : tokens){
-                list += token + " " + "| ";
+                list.append(token).append(" | ");
             }
-            return list;
+            return list.toString();
         }
     }
 
