@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class TweetTokenizer {
     private ArrayList<String> stopwords = new ArrayList<>();
     private HashSet<String> corpus;
-    private ArrayList<TokenList> corpusTokenized = new ArrayList<>(); //per eliminare doppioni
+    private ArrayList<TokenList> corpusTokenized = new ArrayList<>();
     private TweetDictionary dictionary;
 
 

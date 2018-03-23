@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class TweetReader {
     private ArrayList<String> tweets = new ArrayList<>();
-    private HashSet<String> noRepeatTweet = new HashSet<>();
+    private HashSet<String> noRepeatTweet = new HashSet<>(); //per eliminare doppioni
 
 
 
