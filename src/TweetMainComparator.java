@@ -5,7 +5,7 @@ public class TweetMainComparator {
     public static void main(String[] args) {
 
         TweetReader t = new TweetReader();
-        TweetTokenizer tk = new TweetTokenizer(t.readTweets("src/tweet"), "stoplists/ita.txt");
+        TweetTokenizer tk = new TweetTokenizer(t.readTweets("corpus/tweet"), "stoplists/ita.txt");
         ArrayList<TweetTokenizer.TokenList> tokenCorpus = tk.tokenizeCorpus();
 
         for(TweetTokenizer.TokenList tl: tokenCorpus){
