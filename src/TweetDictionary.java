@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class TweetDictionary {
+public class TweetDictionary implements Dictionary{
 
     private HashMap<String, Integer> dictionary = new HashMap<>();
     private int numWords = 0;

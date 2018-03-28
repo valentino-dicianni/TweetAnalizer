@@ -3,13 +3,13 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TweetReader {
+public class TweetReader  implements TextReader{
     private ArrayList<String> tweets = new ArrayList<>();
     private HashSet<String> noRepeatTweet = new HashSet<>(); //per eliminare doppioni
 
 
-
-    public HashSet<String> readTweets(String path) {
+    @Override
+    public HashSet<String> parseFile(String path) {
 
        try {
            String lastLine = "";

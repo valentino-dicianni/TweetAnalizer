@@ -3,15 +3,15 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TweetTokenizer {
+public class Tokenizer {
     private ArrayList<String> stopwords = new ArrayList<>();
     private HashSet<String> corpus;
     private ArrayList<TokenList> corpusTokenized = new ArrayList<>();
-    private TweetDictionary dictionary;
+    private Dictionary dictionary;
 
 
-    TweetTokenizer(HashSet<String> tweets, String stopPath, TweetDictionary dictionary){
-        this.corpus = tweets;
+    Tokenizer(HashSet<String> corpus, String stopPath, Dictionary dictionary){
+        this.corpus = corpus;
         this.dictionary = dictionary;
         getStopwords(stopPath);
 
@@ -69,26 +69,14 @@ public class TweetTokenizer {
         return rep.toLowerCase();
     }
     public void printTokenizedCorpus() {
+        if(corpusTokenized.isEmpty())
+            System.out.println("No corpus tokenized");
+
         for(TokenList tl : corpusTokenized){
             System.out.println(tl.toString() );
         }
     }
 
-    public class TokenList {
-        ArrayList<String> tokens  = new ArrayList<>();
 
-        void addToken(String token) {
-            tokens.add(token);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder list = new StringBuilder("TOKEN LIST: ");
-            for(String token : tokens){
-                list.append(token).append(" | ");
-            }
-            return list.toString();
-        }
-    }
 
 }
