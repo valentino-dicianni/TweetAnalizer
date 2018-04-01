@@ -7,8 +7,8 @@ public class TweetDictionary implements Dictionary{
 
     public boolean putWord(String word){
         if(!dictionary.containsKey(word)){
-            numWords++;
             dictionary.put(word, numWords);
+            numWords++;
             return true;
         }
         else{
@@ -25,12 +25,18 @@ public class TweetDictionary implements Dictionary{
     }
 
 
+
+
     public void printDictionary(){
         for(String iterator : dictionary.keySet()){
             String value = dictionary.get(iterator).toString();
             System.out.println("- KEY: "+ iterator + " INDEX: " + value);
         }
 
+    }
+
+    public int getSize(){
+        return dictionary.size();
     }
 
 

@@ -4,4 +4,5 @@ public interface Dictionary {
     boolean containsWord(String word);
     int getIndex(String word);
     void printDictionary();
+    public int getSize();
 }

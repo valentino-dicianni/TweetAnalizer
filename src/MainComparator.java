@@ -18,10 +18,12 @@ public class MainComparator {
         */
 
         reader = new PressReader();
+        TweetDictionary pd = new TweetDictionary();
 
-        Tokenizer tk = new Tokenizer(reader.parseFile("corpus/press"), stopPath, new TweetDictionary());
+        Tokenizer tk = new Tokenizer(reader.parseFile("corpus/press"), stopPath, pd);
         ArrayList<TokenList> tokenCorpus = tk.tokenizeCorpus();
-        tk.printTokenizedCorpus();
+        TopicModel topics = new TopicModel(tokenCorpus,pd);
+        topics.getTopics(3);
 
 
 

@@ -7,7 +7,11 @@ public class TokenList {
         tokens.add(token);
     }
     public String[] getTokens(){
-        return (String[]) tokens.toArray();
+        String[] res= new String[tokens.size()];
+        for (int i = 0; i<res.length; i++) {
+            res[i] = tokens.get(i);
+        }
+        return res;
     }
 
     @Override
@@ -18,4 +22,6 @@ public class TokenList {
         }
         return list.toString();
     }
+
+
 }
