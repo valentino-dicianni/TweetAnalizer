@@ -1,9 +1,11 @@
+import Interfaces.TextReader;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TweetReader  implements TextReader{
+public class TweetReader  implements TextReader {
     private ArrayList<String> tweets = new ArrayList<>();
     private HashSet<String> noRepeatTweet = new HashSet<>(); //per eliminare doppioni
 

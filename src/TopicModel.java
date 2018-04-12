@@ -1,9 +1,12 @@
+import Interfaces.Dictionary;
+import Tokenizer.TokenList;
+
 import java.util.*;
 
 
 public class TopicModel {
     private ArrayList<TokenList> tokenList;
-    private Dictionary dictionary;
+    private Interfaces.Dictionary dictionary;
 
 
 
@@ -18,7 +21,6 @@ public class TopicModel {
 
 
 
-    //TODO: non ritorna un valore nullo
     /**
      * Dato un arraylist di tokenList (percedentemente passato attaverso un tokenizzatore)
      * restituisce per ogni lista le N parole più significative
@@ -28,7 +30,7 @@ public class TopicModel {
 
     public void getTopics(int numTopics){
         if(tokenList == null){
-            System.out.println("No TokenList set..");
+            System.out.println("No Tokenizer.TokenList set..");
             return;
         }
 

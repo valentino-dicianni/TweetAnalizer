@@ -1,3 +1,5 @@
+package Interfaces;
+
 public interface Dictionary {
 
     boolean putWord(String word);

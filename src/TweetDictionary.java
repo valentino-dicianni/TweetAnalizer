@@ -1,6 +1,8 @@
+import Interfaces.Dictionary;
+
 import java.util.HashMap;
 
-public class TweetDictionary implements Dictionary{
+public class TweetDictionary implements Dictionary {
 
     private HashMap<String, Integer> dictionary = new HashMap<>();
     private int numWords = 0;
@@ -23,9 +25,6 @@ public class TweetDictionary implements Dictionary{
     public int getIndex(String word){
         return dictionary.get(word);
     }
-
-
-
 
     public void printDictionary(){
         for(String iterator : dictionary.keySet()){

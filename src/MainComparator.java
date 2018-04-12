@@ -1,5 +1,7 @@
+import Interfaces.TextReader;
+import Tokenizer.*;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class MainComparator {
     public static void main(String[] args) {
@@ -10,7 +12,7 @@ public class MainComparator {
         TweetReader t = new TweetReader();
         TweetDictionary td = new TweetDictionary();
         TweetTokenizer tk = new TweetTokenizer(t.parseFile("corpus/tweet"), "stoplists/ita.txt", td);
-        ArrayList<TweetTokenizer.TokenList> tokenCorpus = tk.tokenizeCorpus();
+        ArrayList<TweetTokenizer.Tokenizer.TokenList> tokenCorpus = tk.tokenizeCorpus();
 
         tk.printTokenizedCorpus();
 
@@ -20,10 +22,10 @@ public class MainComparator {
         reader = new PressReader();
         TweetDictionary pd = new TweetDictionary();
 
-        Tokenizer tk = new Tokenizer(reader.parseFile("corpus/press"), stopPath, pd);
+        Tokenizer tk = new Tokenizer(reader.parseFile("corpus/press"), stopPath,pd);
         ArrayList<TokenList> tokenCorpus = tk.tokenizeCorpus();
         TopicModel topics = new TopicModel(tokenCorpus,pd);
-        topics.getTopics(3);
+        topics.getTopics(5);
 
 
 
