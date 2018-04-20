@@ -1,9 +1,8 @@
-package Bbnet;
+package Analisis_V1;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +13,7 @@ public class BbNetIdGetter {
     private Language lang;
 
 
-    BbNetIdGetter(Language lang){
+    public BbNetIdGetter(Language lang){
         this.lang = lang;
     }
 
@@ -26,34 +25,26 @@ public class BbNetIdGetter {
         this.lang = lang;
     }
 
-
-
-    boolean executePost(String text) {
+    public boolean executePost(String text) {
         String urlParameters   = "text="+text+"&lang="+lang.toString()+"&key="+key;
         byte[] postData        = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int    postDataLength  = postData.length;
-        HttpURLConnection conn = null;
+        HttpURLConnection conn;
 
         try {
-            URL url = new URL( service_url );
-            conn= (HttpURLConnection) url.openConnection();
-            conn.setDoOutput( true );
-            conn.setInstanceFollowRedirects( false );
-            conn.setRequestMethod( "POST" );
-            conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty( "charset", "utf-8");
+            conn = connectToServer();
             conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-            conn.setUseCaches( false );
 
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
             wr.write( postData );
             int responseCode = conn.getResponseCode();
+
+            //just for check
             System.out.println("\nSending 'GET' request to URL : " + service_url);
             System.out.println("Response Code : " + responseCode);
             System.out.println("Response Message : " +conn.getResponseMessage()+'\n');
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
 
@@ -62,18 +53,54 @@ public class BbNetIdGetter {
             }
             in.close();
 
-            JSONArray jsonArray = new JSONArray(response.toString());
-            for(int i=0 ; i< jsonArray.length(); i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                System.out.println("SysID: " +jsonObject.getString("babelSynsetID"));
-            }
+            analizeJson(text,response.toString());
 
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return true;
     }
+
+    private HttpURLConnection connectToServer() throws IOException {
+        HttpURLConnection conn = null;
+        URL url = new URL(service_url);
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setDoOutput(true);
+        conn.setInstanceFollowRedirects(false);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("charset", "utf-8");
+        conn.setUseCaches(false);
+        return conn;
+    }
+
+    //TODO not void return
+    private void analizeJson(String text, String response){
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = new JSONArray(response);
+
+            for(int i=0 ; i< jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                int start = (int)(jsonObject.getJSONObject("charFragment").get("start"));
+                int end = (int)(jsonObject.getJSONObject("charFragment").get("end")) + 1;
+
+                String word = text.substring(start,end).toLowerCase();
+                System.out.println("SysID: " +jsonObject.getString("babelSynsetID")+" Fragment: "  + word);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
 
 
 }
