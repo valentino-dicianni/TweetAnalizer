@@ -12,6 +12,7 @@ public class TFIDFCalculation {
 
     private SortedSet<String> wordList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
+
     //Calculates inverse Doc frequency.
     public HashMap<String,Double> calculateInverseDocFrequency(DocumentProperties[] docProperties) {
       HashMap<String,Double> InverseDocFreqMap = new HashMap<>();
@@ -32,8 +33,6 @@ public class TFIDFCalculation {
       }
       return InverseDocFreqMap;
     }
-
-
 
     //calculates Term frequency for all terms
     public HashMap<String,Double> calculateTermFrequency(HashMap<String, Integer> inputMap) {
@@ -61,20 +60,6 @@ public class TFIDFCalculation {
         return matcher.matches();
     }
 
-    //Writes the contents of hashmap to CSV file
-    public void outputAsCSV(HashMap<String, Double> treeMap, String OutputPath) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, Double> keymap : treeMap.entrySet()) {
-            builder.append(keymap.getKey());
-            builder.append(",");
-            builder.append(keymap.getValue());
-            builder.append("\r\n");
-        }
-        String content = builder.toString().trim();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(OutputPath));
-        writer.write(content);
-        writer.close();
-    }
     //cleaning up the input by removing .,:"
     private String cleanseInput(String input) {
         String newStr = input.replaceAll("[, . : ;\"]", "");
@@ -85,7 +70,7 @@ public class TFIDFCalculation {
 
     // Converts the input text file to hashmap and even dumps the final output as CSV files
     public HashMap<String, Integer> getTermsFromFile(String Filename, int count, File folder) {
-        HashMap<String,Integer> WordCount = new HashMap<String,Integer>();
+        HashMap<String,Integer> WordCount = new HashMap<>();
         BufferedReader reader = null;
         HashMap<String, Integer> finalMap = new HashMap<>();
         try
@@ -122,13 +107,28 @@ public class TFIDFCalculation {
             }
             // sorting the hashmap
             Map<String, Integer> treeMap = new TreeMap<>(WordCount);
-            finalMap = new HashMap<String, Integer>(treeMap);
+            finalMap = new HashMap<>(treeMap);
         }
         catch(IOException e)
         {
             e.printStackTrace();
         }
         return finalMap;
+    }
+
+    //Writes the contents of hashmap to CSV file
+    public void outputAsCSV(HashMap<String, Double> treeMap, String OutputPath) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, Double> keymap : treeMap.entrySet()) {
+            builder.append(keymap.getKey());
+            builder.append(",");
+            builder.append(keymap.getValue());
+            builder.append("\r\n");
+        }
+        String content = builder.toString().trim();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(OutputPath));
+        writer.write(content);
+        writer.close();
     }
 
 

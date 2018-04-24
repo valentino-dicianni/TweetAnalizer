@@ -7,10 +7,10 @@ import Analisis_V1.utils.Language;
 public class BbTest {
 
     public static void main(String[] args) {
-        BbNetIdGetter bbnet = new BbNetIdGetter(Language.IT);
+        BFYidGetter bbnet = new BFYidGetter(Language.IT);
         //boolean result = bbnet.executePost("La pianta in giardino è verde");
         //System.out.println("\n------\n");
-        bbnet.executePost("frase di prova");
+        bbnet.executePost("il cane mangia un cane dentro il canile, un luogo da cani");
 
 
 

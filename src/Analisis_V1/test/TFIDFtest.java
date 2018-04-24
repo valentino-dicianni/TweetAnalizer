@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TFIDFtest {
-
+/*
     public static void main(String[] args) {
         int count = 0;
         TFIDFCalculation TfidfObj = new TFIDFCalculation();
@@ -72,4 +72,5 @@ public class TFIDFtest {
         }
         System.out.print("DONE");
     }
+ */
 }
