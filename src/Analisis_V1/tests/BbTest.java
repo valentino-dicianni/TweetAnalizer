@@ -1,4 +1,4 @@
-package Analisis_V1.test;
+package Analisis_V1.tests;
 
 import Analisis_V1.*;
 import Analisis_V1.utils.Language;

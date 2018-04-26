@@ -79,7 +79,6 @@ public class BFYidGetter {
         return conn;
     }
 
-    //TODO not void return
     private void analizeJson(String text, String response, Vector<Term> res){
         JSONArray jsonArray = null;
         try {

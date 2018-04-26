@@ -1,12 +1,4 @@
-package Analisis_V1.test;
-
-import Analisis_V1.utils.DocumentProperties;
-import Analisis_V1.TFIDFCalculation;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+package Analisis_V1.tests;
 
 public class TFIDFtest {
 /*
