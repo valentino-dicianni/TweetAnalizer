@@ -10,7 +10,7 @@ public class BbTest {
         BFYidGetter bbnet = new BFYidGetter(Language.IT);
         //boolean result = bbnet.executePost("La pianta in giardino è verde");
         //System.out.println("\n------\n");
-        bbnet.executePost("il cane mangia un cane dentro il canile, un luogo da cani");
+        bbnet.executePost("il m5s è molto forte in italia, è il primo partito");
 
 
 

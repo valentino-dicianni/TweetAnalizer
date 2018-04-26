@@ -32,6 +32,8 @@ public class CorpusCreator {
         // per ogni file nell directory path, tranne altre directory e file nascosti.
         File[] listOfFiles = folder.listFiles(file -> !file.isDirectory() && !file.isHidden());
         if (listOfFiles != null) {
+
+            // Get wordcount from files and calculate TermFrequency
             int noOfDocs = listOfFiles.length;
             DocumentProperties[] docProperties = new DocumentProperties[noOfDocs];
 
@@ -49,11 +51,10 @@ public class CorpusCreator {
             //Calculatin IF
             HashMap<String,Double> inverseDocFreqMap = TfidfObj.calculateInverseDocFrequency(docProperties);
 
-            //Calculating IDF
+            //Calculating tf-IDF
             count = 0;
             for (File file : listOfFiles) {
                 HashMap<String,Double> tfIDFTable = new HashMap<>();
-
                 if (file.isFile()) {
                     double tfIdfValue = 0.0;
                     double idfVal = 0.0;
@@ -68,6 +69,7 @@ public class CorpusCreator {
                         tfIdfValue = tfVal * idfVal;
                         tfIDFTable.put((pair.getKey().toString()), tfIdfValue);
                     }
+                    count++;
                 }
 
                 // Aggiunge la tabella con tfidf ad ogni oggetto
@@ -121,8 +123,6 @@ public class CorpusCreator {
 
                     CorpusObj tmp = disambiguation(sb.toString(), file.getAbsolutePath());
                     createTempCorpus(file.getName(), tmp);
-                    executeTFIDF(TEMP_PATH);
-
 
 
 
@@ -133,9 +133,10 @@ public class CorpusCreator {
 
             }
 
+            executeTFIDF(TEMP_PATH);
 
-
-
+            for( CorpusObj co : corpus)
+                co.assignWeigths();
 
         }
 

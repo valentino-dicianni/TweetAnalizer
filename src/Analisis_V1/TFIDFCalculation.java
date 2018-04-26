@@ -45,7 +45,7 @@ public class TFIDFCalculation {
         //create a new hashMap with Tf values in it.
         for (Map.Entry<String, Integer> pair : inputMap.entrySet()) {
             double tf = pair.getValue() / sum;
-            termFreqMap.put((pair.getKey().toString()), tf);
+            termFreqMap.put((pair.getKey()), tf);
         }
         return termFreqMap;
     }
@@ -59,46 +59,24 @@ public class TFIDFCalculation {
         return matcher.matches();
     }
 
-    //cleaning up the input by removing .,:"
-    private String cleanseInput(String input) {
-        String newStr = input.replaceAll("[, . : ;\"]", "");
-        newStr = newStr.replaceAll("\\p{P}","");
-        newStr = newStr.replaceAll("\t","");
-        return newStr;
-    }
 
     // Converts the input text file to hashmap and even dumps the final output as CSV files
     public HashMap<String, Integer> getTermsFromFile(String Filename, int count, File folder) {
         HashMap<String,Integer> WordCount = new HashMap<>();
         BufferedReader reader = null;
         HashMap<String, Integer> finalMap = new HashMap<>();
-        try
-        {
+        try {
             reader = new BufferedReader(new FileReader(Filename));
             String line = reader.readLine();
-            while(line!=null)
-            {
+            while(line!=null) {
                 String[] words = line.toLowerCase().split(" ");
-                for(String term : words)
-                {
-                    //cleaning up the term ie removing .,:"
-                    term = cleanseInput(term);
-                    //ignoring numbers
-                    if(isDigit(term))
-                    {
-                        continue;
-                    }
-                    if(term.length() == 0)
-                    {
-                        continue;
-                    }
+                for(String term : words) {
+
                     wordList.add(term);
-                    if(WordCount.containsKey(term))
-                    {
+                    if(WordCount.containsKey(term)) {
                         WordCount.put(term,WordCount.get(term)+1);
                     }
-                    else
-                    {
+                    else {
                         WordCount.put(term,1);
                     }
                 }
@@ -108,8 +86,7 @@ public class TFIDFCalculation {
             Map<String, Integer> treeMap = new TreeMap<>(WordCount);
             finalMap = new HashMap<>(treeMap);
         }
-        catch(IOException e)
-        {
+        catch(IOException e) {
             e.printStackTrace();
         }
         return finalMap;
