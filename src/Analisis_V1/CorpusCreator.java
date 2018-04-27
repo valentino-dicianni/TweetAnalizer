@@ -1,8 +1,6 @@
 package Analisis_V1;
 
-import Analisis_V1.utils.CorpusObj;
-import Analisis_V1.utils.DocumentProperties;
-import Analisis_V1.utils.Language;
+import Analisis_V1.utils.*;
 
 import java.io.*;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ public class CorpusCreator {
     private static BFYidGetter bbfy = new BFYidGetter(Language.IT);
     private static TFIDFCalculation TfidfObj = new TFIDFCalculation();
     private static Vector<CorpusObj> corpus = new Vector<>();
-
 
 
     private static CorpusObj disambiguation(String str, String path){
@@ -72,7 +69,7 @@ public class CorpusCreator {
                     count++;
                 }
 
-                // Aggiunge la tabella con tfidf ad ogni oggetto
+                // Add TFIDF table to every CorpusObj
                 for (CorpusObj obj : corpus){
                     if(obj.path.equals(CORPUS_PATH+file.getName())){
                         obj.table = tfIDFTable;
@@ -98,8 +95,6 @@ public class CorpusCreator {
 
     }
 
-
-
     //TODO: implementare il metodo per esportare il corpus, e crearne uno per caricarlo
     public static void outputJSONcorpus(){}
 
@@ -120,21 +115,14 @@ public class CorpusCreator {
                         line = br.readLine();
                     }
 
-
                     CorpusObj tmp = disambiguation(sb.toString(), file.getAbsolutePath());
                     createTempCorpus(file.getName(), tmp);
-
-
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
-
             executeTFIDF(TEMP_PATH);
-
             for( CorpusObj co : corpus)
                 co.assignWeigths();
 
