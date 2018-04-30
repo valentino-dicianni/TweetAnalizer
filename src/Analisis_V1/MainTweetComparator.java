@@ -69,7 +69,7 @@ public class MainTweetComparator {
             }
 
             int best = 0;
-            for (int j = 0; i < results.length;  i++){
+            for (int j = 0; j < results.length;  j++){
                 if ( results[j] > results[best] ) best = j;
             }
 
