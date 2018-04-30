@@ -18,6 +18,14 @@ public class CorpusObj {
 
     }
 
+    public Vector<Term> getTerms() {
+        return terms;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
     public String termsToString(){
         StringBuilder result = new StringBuilder();
         for (Term term: terms) {
@@ -35,10 +43,14 @@ public class CorpusObj {
                     term.setWeigth(term.getWeigth() + table.get(str));
                 else System.out.println("---> ERROR getting weigths from table Term: " + term.getString());
             }
-            System.out.println( "TERM: " +  term.getString() + "\tWeigth: " + term.getWeigth() + "\tSYSID: " + term.getSysid());
+            //System.out.println( "TERM: " +  term.getString() + "\tWeigth: " + term.getWeigth() + "\tSYSID: " + term.getSysid());
         }
     }
 
+    @Override
+    public String toString() {
+        return ("Copus Object Path: " + path);
+    }
 }
 
 

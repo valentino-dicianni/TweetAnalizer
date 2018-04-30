@@ -65,6 +65,15 @@ public class TTCSInterface {
 
     }
 
+
+    public static double getScore(String  key){
+        return bids_to_ttcs_similarity.get(key);
+    }
+
+    public static void resetTable(){
+        bids_to_ttcs_similarity.clear();
+    }
+
     public static void print() {
         for (String s : bids_to_ttcs_similarity.keySet()) {
             System.out.println(s.split("_")[0] + " " + s.split("_")[1] + " " + bids_to_ttcs_similarity.get(s));

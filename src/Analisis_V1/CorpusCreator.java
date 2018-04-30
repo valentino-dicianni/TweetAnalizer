@@ -8,21 +8,32 @@ import java.util.Map;
 import java.util.Vector;
 
 public class CorpusCreator {
-    private static String CORPUS_PATH ="/Users/mac/IdeaProjects/TwitterAnalizer/corpus/press/";
-    private static String TEMP_PATH ="/Users/mac/IdeaProjects/TwitterAnalizer/corpus/press/temp/";
+    private  String CORPUS_PATH;
+    private  String TEMP_PATH;
 
-    private static BFYidGetter bbfy = new BFYidGetter(Language.IT);
-    private static TFIDFCalculation TfidfObj = new TFIDFCalculation();
-    private static Vector<CorpusObj> corpus = new Vector<>();
+    private  BFYidGetter bbfy;
+    private  TFIDFCalculation tfidfCalculation;
+    private  Vector<CorpusObj> corpus;
 
 
-    private static CorpusObj disambiguation(String str, String path){
+    public CorpusCreator(String corpusPath, String tempPath){
+        this.CORPUS_PATH = corpusPath;
+        this.TEMP_PATH = tempPath;
+        this.bbfy = new BFYidGetter(Language.IT);
+        this.tfidfCalculation = new TFIDFCalculation();
+        this.corpus = new Vector<>();
+    }
+
+    //TODO: Create a corpus from a JSON file
+    public CorpusCreator(String path){ }
+
+
+    private  CorpusObj disambiguation(String str, String path){
         CorpusObj corpusObj = new CorpusObj(path,str, bbfy.executePost(str));
         corpus.add(corpusObj);
         return corpusObj;
     }
-
-    private static void executeTFIDF(String path) {
+    private  void executeTFIDF(String path) {
         int count = 0;
         File folder = new File(path);
 
@@ -37,16 +48,16 @@ public class CorpusCreator {
             for (File file : listOfFiles) {
                 if (file.isFile()) {
                     docProperties[count] = new DocumentProperties();
-                    HashMap<String,Integer> wordCount = TfidfObj.getTermsFromFile(file.getAbsolutePath(),count, folder);
+                    HashMap<String,Integer> wordCount = tfidfCalculation.getTermsFromFile(file.getAbsolutePath(),count, folder);
                     docProperties[count].setWordCountMap(wordCount);
-                    HashMap<String,Double> termFrequency = TfidfObj.calculateTermFrequency(docProperties[count].getWordCountMap());
+                    HashMap<String,Double> termFrequency = tfidfCalculation.calculateTermFrequency(docProperties[count].getWordCountMap());
                     docProperties[count].setTermFreqMap(termFrequency);
                     count++;
                 }
             }
 
             //Calculatin IF
-            HashMap<String,Double> inverseDocFreqMap = TfidfObj.calculateInverseDocFrequency(docProperties);
+            HashMap<String,Double> inverseDocFreqMap = tfidfCalculation.calculateInverseDocFrequency(docProperties);
 
             //Calculating tf-IDF
             count = 0;
@@ -77,11 +88,10 @@ public class CorpusCreator {
                     }
                 }
             }
-
         }
     }
 
-    private static void createTempCorpus(String name, CorpusObj obj){
+    private  void createTempCorpus(String name, CorpusObj obj){
         PrintWriter writer = null;
         try {
             String text = obj.termsToString();
@@ -96,9 +106,9 @@ public class CorpusCreator {
     }
 
     //TODO: implementare il metodo per esportare il corpus, e crearne uno per caricarlo
-    public static void outputJSONcorpus(){}
+    public  void outputJSONcorpus(){}
 
-    public static void main(String[] args) {
+    public  Vector<CorpusObj> createCorpus() {
         File folder = new File(CORPUS_PATH);
         File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
 
@@ -127,7 +137,7 @@ public class CorpusCreator {
                 co.assignWeigths();
 
         }
-
+        return this.corpus;
 
     }
 
