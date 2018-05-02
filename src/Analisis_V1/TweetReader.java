@@ -50,22 +50,6 @@ public class TweetReader {
     }
 
 
-
-
-
-    private boolean isCitation(String str){
-        return str.charAt(0) == '@';
-    }
-
-    private boolean isLink(String str){
-        return str.contains("http:") || str.contains("www.") || str.contains("https:");
-    }
-
-    private String removePunctuation(String str){
-        String rep = str.replaceAll("[^a-z \\sA-Z \\s0-9]","");
-        return rep.toLowerCase();
-    }
-
     public Vector<String> getIDsFromTweet(String tweet){
         Vector<Term> terms = bbfy.executePost(tweet);
         Vector<String> ids = new Vector<>();

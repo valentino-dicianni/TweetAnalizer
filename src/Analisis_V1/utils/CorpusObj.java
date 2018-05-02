@@ -14,8 +14,6 @@ public class CorpusObj {
         this.content = content;
         this.path = path;
         this.terms = terms;
-
-
     }
 
     public Vector<Term> getTerms() {

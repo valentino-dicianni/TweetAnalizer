@@ -111,6 +111,7 @@ public class CorpusCreator {
     public  Vector<CorpusObj> createCorpus() {
         File folder = new File(CORPUS_PATH);
         File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+        System.out.println("Inizio creazione Corpus...");
 
         if (listOfFiles != null) {
             for(File file : listOfFiles){
@@ -133,6 +134,7 @@ public class CorpusCreator {
                 }
             }
             executeTFIDF(TEMP_PATH);
+            System.out.println("TF-IDF calcolato...");
             for( CorpusObj co : corpus)
                 co.assignWeigths();
 

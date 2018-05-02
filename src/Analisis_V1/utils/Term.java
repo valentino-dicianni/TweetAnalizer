@@ -17,6 +17,7 @@ public class Term {
     public double getWeigth() {
         return weigth;
     }
+
     public void setWeigth(double weigth) {
         this.weigth = weigth;
     }

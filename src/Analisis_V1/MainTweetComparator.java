@@ -8,15 +8,16 @@ import java.util.Vector;
 
 public class MainTweetComparator {
 
-    private static double compare(CorpusObj obj, Vector<String> tweet) throws IOException {
+    private static Vector<Double> compare(Vector<CorpusObj> corpus, Vector<String> tweet) throws IOException {
         StringBuilder couple = new StringBuilder("{");
-        double score = 0;
+        Vector<Double> score = new Vector<>();
 
-        for(String id : tweet){
-            for(Term t : obj.getTerms()){
-                couple.append("[").append(id).append(",").append(t.getSysid()).append("]");
-                couple.append(",");
-
+        for(CorpusObj obj : corpus) {
+            for (String id : tweet) {
+                for (Term t : obj.getTerms()) {
+                    couple.append("[").append(id).append(",").append(t.getSysid()).append("]");
+                    couple.append(",");
+                }
             }
         }
         String res = couple.toString();
@@ -27,16 +28,20 @@ public class MainTweetComparator {
         //TTCSInterface.print();
 
         //Compose results
-        for(String id : tweet){
-            for(Term t : obj.getTerms()){
-                score += (TTCSInterface.getScore(id+"_"+t.getSysid()) * t.getWeigth());
+        for(CorpusObj obj : corpus) {
+            double sc = 0;
+            for (String id : tweet) {
+                for (Term t : obj.getTerms()) {
+                    sc += (TTCSInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
+                }
+
             }
+            score.add(sc);
         }
 
         // Reset table
         TTCSInterface.resetTable();
 
-        //System.out.println(score);
         return score;
     }
 
@@ -51,30 +56,25 @@ public class MainTweetComparator {
         TweetReader tweetReader = new TweetReader();
 
         corpus = corpusCreator.createCorpus();
+        System.out.println("Corpus creato con Succsso...\n");
+
 
         //todo: implementare tweet reader
-        tweetIDs = tweetReader.getIDsFromTweet("Roberto Fico ha deluso le aspettative: con le sue forze è pronto a sbaragliare il centrodestra");
+        System.out.println("Analisi tweet in input: 'Il teorema di Godel è una vera innovazione: chi non ama la logica formale! #godel #nelcuore' ");
+        tweetIDs = tweetReader.getIDsFromTweet("Il teorema di Godel è una vera innovazione: chi non ama la logica formale! #goedel #nelcuore");
 
-        System.out.println("Risultati ottenuti:\n");
-
-        double[] results = new double[corpus.size()];
+        System.out.println("\nRisultati ottenuti:\n");
 
         try {
-            int i = 0;
-            for (CorpusObj co: corpus) {
-                double res = compare(co, tweetIDs);
-                System.out.println(co + " scored: "+ res);
-                results[i] = res;
-                i++;
-            }
-
+            Vector<Double> res = compare(corpus, tweetIDs);
             int best = 0;
-            for (int j = 0; j < results.length;  j++){
-                if ( results[j] > results[best] ) best = j;
+            for (int i = 0; i < res.size();  i++){
+                System.out.println(corpus.get(i) + "/ - Scored: " + res.elementAt(i));
+                if ( res.elementAt(i) > res.elementAt(best)) best = i;
             }
 
+            System.out.println("\n------ Best Similarity ------\n");
             System.out.println(corpus.get(best).getContent());
-
 
         } catch (IOException e) {
             e.printStackTrace();

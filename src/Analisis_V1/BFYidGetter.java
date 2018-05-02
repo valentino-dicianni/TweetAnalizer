@@ -45,9 +45,9 @@ public class BFYidGetter {
             int responseCode = conn.getResponseCode();
 
             //just for check
-            System.out.println("\nSending 'GET' request to URL : " + service_url);
-            System.out.println("Response Code : " + responseCode);
-            System.out.println("Response Message : " +conn.getResponseMessage()+'\n');
+            //System.out.println("\nSending 'GET' request to URL : " + service_url);
+            //System.out.println("Response Code : " + responseCode);
+            //System.out.println("Response Message : " +conn.getResponseMessage()+'\n');
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
@@ -68,7 +68,6 @@ public class BFYidGetter {
         for (Term t : result) {
             System.out.println("TERM: " + t.getString() + " ID: " + t.getSysid());
         }*/
-
         return result;
     }
 

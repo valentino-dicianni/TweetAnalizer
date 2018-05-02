@@ -8,9 +8,7 @@ import java.util.HashMap;
 
 
 public class TTCSInterface {
-
     private static HashMap<String, Double> bids_to_ttcs_similarity = new HashMap<>();
-
 
     public static void launch(String couples) throws IOException {
         String user = "vdicianni";
@@ -30,7 +28,6 @@ public class TTCSInterface {
             Channel channel = session.openChannel("exec");
             ((ChannelExec)channel).setCommand("cd /home/vdicianni/NL@DipInfo_project/NL@DipInfo/launchers/; ./VSP -similarity -cjson -metric=R0 -input=\""+couples+"\"");
             channel.connect();
-
             BufferedReader is = new BufferedReader(new InputStreamReader(channel.getInputStream()));
             String line;
             String json_distances = "";
