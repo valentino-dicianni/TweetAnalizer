@@ -36,7 +36,8 @@ public class MainTweetComparator {
                 }
 
             }
-            score.add(sc);
+            // normalizza per la lunghezza dei documenti
+            score.add(sc / obj.getNumWords());
         }
 
         // Reset table

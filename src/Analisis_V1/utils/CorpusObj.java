@@ -8,12 +8,24 @@ public class CorpusObj {
     public HashMap<String,Double> table;
     private String content;
     private Vector<Term> terms;
+    private  int numWords;
+
 
 
     public CorpusObj(String path, String content,Vector<Term> terms){
         this.content = content;
         this.path = path;
         this.terms = terms;
+        this.numWords = calculateNumWords(content);
+    }
+
+    public int getNumWords() {
+        return numWords;
+    }
+
+    private int calculateNumWords(String content) {
+        String[] words = content.replaceAll("[^a-zA-Z ]", "").split("\\s+");
+        return words.length;
     }
 
     public Vector<Term> getTerms() {

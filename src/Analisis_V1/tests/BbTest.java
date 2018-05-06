@@ -12,7 +12,7 @@ public class BbTest {
         BFYidGetter bbnet = new BFYidGetter(Language.IT);
         //boolean result = bbnet.executePost("La pianta in giardino è verde");
         //System.out.println("\n------\n");
-        bbnet.executePost("I teoremi di Gödel sono teoremi di logica del primo ordine");
+        bbnet.executePost("m5s");
 
 
         System.out.println("\n------\n");

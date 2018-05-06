@@ -28,9 +28,11 @@ public class TTCSInterface {
             Channel channel = session.openChannel("exec");
             ((ChannelExec)channel).setCommand("cd /home/vdicianni/NL@DipInfo_project/NL@DipInfo/launchers/; ./VSP -similarity -cjson -metric=R0 -input=\""+couples+"\"");
             channel.connect();
+
             BufferedReader is = new BufferedReader(new InputStreamReader(channel.getInputStream()));
             String line;
             String json_distances = "";
+
 
             while ((line = is.readLine()) != null) {
                 if (line.contains("JSON-OUTPUT => ")) {
@@ -38,12 +40,13 @@ public class TTCSInterface {
                     break;
                 }
             }
+            System.out.println("qui arriva");
+
 
             String[] similarities = json_distances.split("],");
             for (String one_score : similarities) {
                 one_score = one_score.replaceAll("\\[", "").replaceAll("]", "");
                 String[] elements = one_score.split(",");
-                //log.debug(Arrays.toString(elements));
                 String bsi1 = elements[0];
                 String bsi2 = elements[1];
                 double score = 0.0;
