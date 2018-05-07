@@ -1,7 +1,7 @@
 package Analisis_V1;
 
+import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.Language;
-import Analisis_V1.utils.Term;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -51,9 +51,9 @@ public class TweetReader {
 
 
     public Vector<String> getIDsFromTweet(String tweet){
-        Vector<Term> terms = bbfy.executePost(tweet);
+        Vector<Concept> terms = bbfy.executePost(tweet);
         Vector<String> ids = new Vector<>();
-        for(Term t : terms){
+        for(Concept t : terms){
             ids.add(t.getSysid());
         }
         return ids;

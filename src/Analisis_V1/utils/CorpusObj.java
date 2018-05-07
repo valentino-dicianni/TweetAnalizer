@@ -7,15 +7,15 @@ public class CorpusObj {
     public String path;
     public HashMap<String,Double> table;
     private String content;
-    private Vector<Term> terms;
+    private Vector<Concept> concepts;
     private  int numWords;
 
 
 
-    public CorpusObj(String path, String content,Vector<Term> terms){
+    public CorpusObj(String path, String content,Vector<Concept> concepts){
         this.content = content;
         this.path = path;
-        this.terms = terms;
+        this.concepts = concepts;
         this.numWords = calculateNumWords(content);
     }
 
@@ -24,12 +24,12 @@ public class CorpusObj {
     }
 
     private int calculateNumWords(String content) {
-        String[] words = content.replaceAll("[^a-zA-Z ]", "").split("\\s+");
+        String[] words = content.replaceAll("[^a-zA-Z0-9]", " ").split("\\s+");
         return words.length;
     }
 
-    public Vector<Term> getTerms() {
-        return terms;
+    public Vector<Concept> getConcepts() {
+        return concepts;
     }
 
     public String getContent() {
@@ -38,20 +38,20 @@ public class CorpusObj {
 
     public String termsToString(){
         StringBuilder result = new StringBuilder();
-        for (Term term: terms) {
-            result.append(term.getString());
+        for (Concept concept: concepts) {
+            result.append(concept.getString());
             result.append(" ");
         }
         return result.toString();
     }
 
     public void assignWeigths() {
-        for (Term term : terms) {
-            String[] pieces = term.getString().split(" ");
+        for (Concept concept : concepts) {
+            String[] pieces = concept.getString().split(" ");
             for (String str : pieces) {
                 if (table.get(str) != null)
-                    term.setWeigth(term.getWeigth() + table.get(str));
-                else System.out.println("---> ERROR getting weigths from table Term: " + term.getString());
+                    concept.setWeigth(concept.getWeigth() + table.get(str));
+                else System.out.println("---> ERROR getting weigths from table Concept: " + concept.getString());
             }
             //System.out.println( "TERM: " +  term.getString() + "\tWeigth: " + term.getWeigth() + "\tSYSID: " + term.getSysid());
         }

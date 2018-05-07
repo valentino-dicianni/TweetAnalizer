@@ -1,7 +1,7 @@
 package Analisis_V1;
 
+import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.Language;
-import Analisis_V1.utils.Term;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,12 +28,12 @@ public class BFYidGetter {
         this.lang = lang;
     }
 
-    public Vector<Term> executePost(String text) {
+    public Vector<Concept> executePost(String text) {
         String urlParameters   = "text="+text+"&lang="+lang.toString()+"&key="+key;
         byte[] postData        = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int    postDataLength  = postData.length;
         HttpURLConnection conn;
-        Vector<Term> result = new Vector<>();
+        Vector<Concept> result = new Vector<>();
 
 
         try {
@@ -65,7 +65,7 @@ public class BFYidGetter {
 
         //for testing...
         /*
-        for (Term t : result) {
+        for (Concept t : result) {
             System.out.println("TERM: " + t.getString() + " ID: " + t.getSysid());
         }*/
         return result;
@@ -84,7 +84,7 @@ public class BFYidGetter {
         return conn;
     }
 
-    private void analizeJson(String text, String response, Vector<Term> res){
+    private void analizeJson(String text, String response, Vector<Concept> res){
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(response);
@@ -98,7 +98,7 @@ public class BFYidGetter {
                 String word = text.substring(start,end).toLowerCase();
                 String sysid = jsonObject.getString("babelSynsetID");
                 //System.out.println("SysID: " +jsonObject.getString("babelSynsetID")+" Fragment: "  + word);
-                Term term = new Term(word, sysid);
+                Concept term = new Concept(word, sysid);
                 res.add(term);
             }
 

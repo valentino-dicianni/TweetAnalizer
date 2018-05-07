@@ -1,6 +1,6 @@
 package Analisis_V1.utils;
 
-public class Term {
+public class Concept {
     private String term;
     private String sysid;
     private double weigth = 0.0;
@@ -22,7 +22,7 @@ public class Term {
         this.weigth = weigth;
     }
 
-    public Term(String term, String id){
+    public Concept(String term, String id){
        this.term = term;
        this.sysid = id;
    }

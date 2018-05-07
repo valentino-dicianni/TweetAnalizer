@@ -33,7 +33,7 @@ public class TFIDFCalculation {
       return InverseDocFreqMap;
     }
 
-    //calculates Term frequency for all terms
+    //calculates Concept frequency for all terms
     public HashMap<String,Double> calculateTermFrequency(HashMap<String, Integer> inputMap) {
         HashMap<String ,Double> termFreqMap = new HashMap<>();
         double sum = 0.0;

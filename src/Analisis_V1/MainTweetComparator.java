@@ -1,7 +1,7 @@
 package Analisis_V1;
 
+import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.CorpusObj;
-import Analisis_V1.utils.Term;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -14,7 +14,7 @@ public class MainTweetComparator {
 
         for(CorpusObj obj : corpus) {
             for (String id : tweet) {
-                for (Term t : obj.getTerms()) {
+                for (Concept t : obj.getConcepts()) {
                     couple.append("[").append(id).append(",").append(t.getSysid()).append("]");
                     couple.append(",");
                 }
@@ -31,7 +31,7 @@ public class MainTweetComparator {
         for(CorpusObj obj : corpus) {
             double sc = 0;
             for (String id : tweet) {
-                for (Term t : obj.getTerms()) {
+                for (Concept t : obj.getConcepts()) {
                     sc += (TTCSInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
 
