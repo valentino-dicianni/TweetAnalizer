@@ -24,7 +24,7 @@ public class MainTweetComparator {
         res = res.substring(0, res.length() - 1);
         res += "}";
 
-        TTCSInterface.launch(res);
+        TTCSInterface.launch("vdicianni","Tavol15pork1" ,res);
         //TTCSInterface.print();
 
         //Compose results

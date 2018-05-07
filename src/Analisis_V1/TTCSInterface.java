@@ -10,17 +10,14 @@ import java.util.HashMap;
 public class TTCSInterface {
     private static HashMap<String, Double> bids_to_ttcs_similarity = new HashMap<>();
 
-    public static void launch(String couples) throws IOException {
-        String user = "vdicianni";
-        String password = "Tavol15pork1";
+    public static void launch(String usr, String psswd, String couples) throws IOException {
         String host = "ground.di.unito.it";
         int port=22;
 
-
         try {
             JSch jsch = new JSch();
-            Session session = jsch.getSession(user, host, port);
-            session.setPassword(password);
+            Session session = jsch.getSession(usr, host, port);
+            session.setPassword(psswd);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
