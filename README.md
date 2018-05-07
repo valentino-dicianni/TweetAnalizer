@@ -3,13 +3,13 @@
 Autore: Valentiono Di Cianni\
 Relatore: Daniele Radicioni
 
-##Introduzione
+## Introduzione
 
 L’ idea è quella di creare uno strumento di analisi testuale che preso in input un documento, restituisce in output il grado di Similarity che ha questo documento con un corpus di documenti analizzati in precedenza.
 Ad un livello più alto, il documento in input sarà rappresentato da un tweet, mentre il corpus di documenti da una raccolta di articoli di stampa.
 
 
-##Funzione Caratteristica
+## Funzione Caratteristica
 La funzione caratteristica è il cuore del progetto, ciò che mi restituisce il risultato finale.
 Nello specifico:
 
@@ -36,14 +36,14 @@ V_q : il vettore query
 V_r : il vettore risultato
 
 
-##Concept Similarity
+## Concept Similarity
 La Concept Similarity tra un tweet e un articolo di giornale viene calcolata come la somma del confronto tra ogni termine del tweet ed ogni termine del corpus moltiplicato per il peso di quest’ultimo all’interno del corpus. 
 
 Per evitare che la similarity in un articolo molto lungo, ma poco significativo, sia maggiore rispetto ad esempio un articolo breve ma molto significativo, i risultati ottenuti vengono normalizzati a seconda del numero di parole in ogni documento
 
 Un esempio di quello che ho cercato di descrivere sopra.
 
-##Vettori di rappresentazione
+## Vettori di rappresentazione
 Ogni file all’interno del corpus di documenti è un insieme di vettori di rappresentazione. Questi ultimi, in maniera astratta, possono essere visti come costrutti che rappresentano un concetto.
 In particolare, ogni concetto ha questa forma:
 
@@ -65,7 +65,7 @@ Il calcolo del SysID è effettuato tramite query al server di Babbelfy che esegu
 Il calcolo del Weigth è effettuato tramite calcolo di TF-IDF sull’intero corpus di documenti, ed ad ogni parola specifica è assegnato un numero che rappresenta il peso della parola.
 
 
-##Corpus di documenti
+## Corpus di documenti
 Il corpus di documenti, dopo la disambiguazione (Babelfy) e l’assegnazione dei pesi tramite TF-IDF ai vari concetti si presenta in questo modo:
 
 I concetti composti da più parole come ad esempio “partito comunista” sono riconosciuti da Babelfy in fase di disambiguazione. 
