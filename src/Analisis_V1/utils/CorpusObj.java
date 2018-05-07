@@ -5,9 +5,9 @@ import java.util.Vector;
 
 public class CorpusObj {
     public String path;
-    public HashMap<String,Double> table;
     private String content;
     private Vector<Concept> concepts;
+    private HashMap<String,Double> tfidfTable;
     private  int numWords;
 
 
@@ -18,9 +18,24 @@ public class CorpusObj {
         this.concepts = concepts;
         this.numWords = calculateNumWords(content);
     }
+    public CorpusObj(String path, String content,Vector<Concept> concepts, int numWords){
+        this.path = path;
+        this.content = content;
+        this.concepts = concepts;
+        this.numWords = numWords;
+        this.tfidfTable = null;
+    }
 
     public int getNumWords() {
         return numWords;
+    }
+
+    public void setTfidfTable(HashMap<String, Double> tfidfTable) {
+        this.tfidfTable = tfidfTable;
+    }
+
+    public HashMap<String, Double> getTfidfTable() {
+        return tfidfTable;
     }
 
     private int calculateNumWords(String content) {
@@ -49,9 +64,9 @@ public class CorpusObj {
         for (Concept concept : concepts) {
             String[] pieces = concept.getString().split(" ");
             for (String str : pieces) {
-                if (table.get(str) != null)
-                    concept.setWeigth(concept.getWeigth() + table.get(str));
-                else System.out.println("---> ERROR getting weigths from table Concept: " + concept.getString());
+                if (tfidfTable.get(str) != null)
+                    concept.setWeigth(concept.getWeigth() + tfidfTable.get(str));
+                else System.out.println("---> ERROR getting weigths from tfidfTable Concept: " + concept.getString());
             }
             //System.out.println( "TERM: " +  term.getString() + "\tWeigth: " + term.getWeigth() + "\tSYSID: " + term.getSysid());
         }

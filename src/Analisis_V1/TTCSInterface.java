@@ -26,7 +26,8 @@ public class TTCSInterface {
 
 
             Channel channel = session.openChannel("exec");
-            ((ChannelExec)channel).setCommand("cd /home/vdicianni/NL@DipInfo_project/NL@DipInfo/launchers/; ./VSP -similarity -cjson -metric=R0 -input=\""+couples+"\"");
+            ((ChannelExec)channel).setCommand("cd /home/vdicianni/NL@DipInfo_project/NL@DipInfo/launchers/; " +
+                    "./VSP -similarity -cjson -metric=R0 -input=\""+couples+"\"");
             channel.connect();
 
             BufferedReader is = new BufferedReader(new InputStreamReader(channel.getInputStream()));
@@ -40,8 +41,6 @@ public class TTCSInterface {
                     break;
                 }
             }
-            System.out.println("qui arriva");
-
 
             String[] similarities = json_distances.split("],");
             for (String one_score : similarities) {

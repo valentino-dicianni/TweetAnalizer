@@ -26,4 +26,10 @@ public class Concept {
        this.term = term;
        this.sysid = id;
    }
+
+   public Concept (String term, String id, double weigth){
+       this.term = term;
+       this.sysid = id;
+       this.weigth = weigth;
+   }
 }

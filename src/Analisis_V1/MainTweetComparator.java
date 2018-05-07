@@ -40,7 +40,7 @@ public class MainTweetComparator {
             score.add(sc / obj.getNumWords());
         }
 
-        // Reset table
+        // Reset tfidfTable
         TTCSInterface.resetTable();
 
         return score;
@@ -48,15 +48,19 @@ public class MainTweetComparator {
 
     public static void main(String[] args) {
 
-        final String corpusPath = "/Users/mac/IdeaProjects/TwitterAnalizer/corpus/press/";
-        final String tempPath = "/Users/mac/IdeaProjects/TwitterAnalizer/corpus/press/temp/";
+        final String corpusPath = "corpus/press/";
+        final String tempPath = "corpus/press/temp/";
         Vector<CorpusObj> corpus;
         Vector<String> tweetIDs;
 
-        CorpusCreator corpusCreator = new CorpusCreator(corpusPath, tempPath);
         TweetReader tweetReader = new TweetReader();
 
-        corpus = corpusCreator.createCorpus();
+        //CorpusCreator corpusCreator = new CorpusCreator(corpusPath,tempPath);
+        //corpus = corpusCreator.createCorpus();
+
+        CorpusCreator corpusCreator = new CorpusCreator("corpus/JSONcorpus/jsonCorpus.json");
+        corpus = corpusCreator.getCorpus();
+
         System.out.println("Corpus creato con Succsso...\n");
 
 
