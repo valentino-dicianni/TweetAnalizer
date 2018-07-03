@@ -10,6 +10,15 @@ import java.util.HashMap;
 public class TTCSInterface {
     private static HashMap<String, Double> bids_to_ttcs_similarity = new HashMap<>();
 
+    /**
+     * Calculate the concept similarity between the couples in input and stores the
+     * results in the HashMap {@code bids_to_ttcs_similarity}
+     *
+     * @param usr credential for login in Cover
+     * @param psswd credential for login in Cover
+     * @param couples list of bbNet_sysID to compare for concept similarity in Cover
+     * @throws IOException for buffer reader
+     */
     public static void launch(String usr, String psswd, String couples) throws IOException {
         String host = "ground.di.unito.it";
         int port=22;

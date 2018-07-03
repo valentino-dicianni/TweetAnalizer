@@ -10,14 +10,13 @@ public class CorpusObj {
     private HashMap<String,Double> tfidfTable;
     private  int numWords;
 
-
-
     public CorpusObj(String path, String content,Vector<Concept> concepts){
         this.content = content;
         this.path = path;
         this.concepts = concepts;
         this.numWords = calculateNumWords(content);
     }
+
     public CorpusObj(String path, String content,Vector<Concept> concepts, int numWords){
         this.path = path;
         this.content = content;

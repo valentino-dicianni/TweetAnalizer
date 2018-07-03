@@ -11,11 +11,17 @@ import java.util.Vector;
 
 public class TweetReader {
     private ArrayList<String> tweets = new ArrayList<>();
-    private HashSet<String> noRepeatTweet = new HashSet<>(); //per eliminare doppioni
+    private HashSet<String> noRepeatTweet = new HashSet<>();
     private BFYidGetter bbfy = new BFYidGetter(Language.IT);
 
 
-
+    /**
+     * Parse the input tweets file and returns a set of tweets, deleting all double tweets,
+     * and useless file parts.
+     *
+     * @param path the file path in input
+     * @return an HashSet of parsed tweets
+     */
     public HashSet<String> parseFile(String path) {
        try {
            String lastLine = "";

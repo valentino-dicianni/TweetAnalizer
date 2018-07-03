@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 
 public class TFIDFCalculation {
-
     private SortedSet<String> wordList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     //Calculates inverse Doc frequency.

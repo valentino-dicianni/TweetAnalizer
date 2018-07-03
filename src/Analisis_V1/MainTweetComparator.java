@@ -8,6 +8,15 @@ import java.util.Vector;
 
 public class MainTweetComparator {
 
+    /**
+     * Main method: compare the imput tweet with che corpus of documents and returns a
+     * vector vith the result scores.
+     *
+     * @param corpus the document corpus
+     * @param tweet the tweet we are considering
+     * @return the score vector with Concept Similarities between {@code tweet} and {@code corpus}
+     * @throws IOException from {@code TTCSInterface.launch()}
+     */
     private static Vector<Double> compare(Vector<CorpusObj> corpus, Vector<String> tweet) throws IOException {
         StringBuilder couple = new StringBuilder("{");
         Vector<Double> score = new Vector<>();
@@ -35,7 +44,7 @@ public class MainTweetComparator {
                     sc += (TTCSInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
             }
-            // normalizza per la lunghezza dei documenti
+            // TODO: togliere dopo ultime modifiche Nomalize doc length
             score.add(sc / obj.getNumWords());
         }
 
@@ -43,12 +52,10 @@ public class MainTweetComparator {
         TTCSInterface.resetTable();
 
         return score;
-        //prova di ritorno 3
 
     }
 
     public static void main(String[] args) {
-
         final String corpusPath = "corpus/press/";
         final String tempPath = "corpus/press/temp/";
         Vector<CorpusObj> corpus;

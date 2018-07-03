@@ -24,7 +24,6 @@ public class CorpusCreator {
         this.bbfy = new BFYidGetter(Language.IT);
         this.tfidfCalculation = new TFIDFCalculation();
         this.corpus = new Vector<>();
-
     }
 
     // Create a corpus from a JSON file

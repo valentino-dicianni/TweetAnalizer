@@ -28,26 +28,29 @@ public class BFYidGetter {
         this.lang = lang;
     }
 
+
+    /**
+     * Send a GET request to Babelfy with an input text and returns a list of sysID.
+     *
+     * @param text in input to Babelfy
+     * @return a vector of {@code Concept} from the text
+     */
     public Vector<Concept> executePost(String text) {
         String urlParameters   = "text="+text+"&lang="+lang.toString()+"&key="+key;
         byte[] postData        = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int    postDataLength  = postData.length;
-        HttpURLConnection conn;
+        HttpURLConnection conn = null;
         Vector<Concept> result = new Vector<>();
-
 
         try {
             conn = connectToServer();
             conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
             wr.write( postData );
-            int responseCode = conn.getResponseCode();
 
-            //just for check
-            //System.out.println("\nSending 'GET' request to URL : " + service_url);
-            //System.out.println("Response Code : " + responseCode);
-            //System.out.println("Response Message : " +conn.getResponseMessage()+'\n');
+            if (conn.getResponseCode() != 200){
+                throw new Exception("Bad response code");
+            }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
@@ -61,16 +64,21 @@ public class BFYidGetter {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-
-        //for testing...
-        /*
-        for (Concept t : result) {
-            System.out.println("TERM: " + t.getString() + " ID: " + t.getSysid());
-        }*/
         return result;
     }
 
+
+    /**
+     * ConnectToServer utility for connection to Babelfy.
+     *
+     * @return a {@code HttpURLConnection}
+     * @throws IOException if connection doesn't work
+     */
     private HttpURLConnection connectToServer() throws IOException {
         HttpURLConnection conn = null;
         URL url = new URL(service_url);
@@ -84,12 +92,19 @@ public class BFYidGetter {
         return conn;
     }
 
+    /**
+     * Analise a JSON string, creates the concepts and store them into a result vector.
+     *
+     * @param text the text analised by Babelnet
+     * @param response the response in JSON format from Babelnet
+     * @param res is the results vector
+     */
     private void analizeJson(String text, String response, Vector<Concept> res){
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(response);
 
-            for(int i=0 ; i< jsonArray.length(); i++){
+            for(int i=0; i < jsonArray.length(); i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                 int start = (int)(jsonObject.getJSONObject("charFragment").get("start"));
@@ -97,11 +112,9 @@ public class BFYidGetter {
 
                 String word = text.substring(start,end).toLowerCase();
                 String sysid = jsonObject.getString("babelSynsetID");
-                //System.out.println("SysID: " +jsonObject.getString("babelSynsetID")+" Fragment: "  + word);
                 Concept term = new Concept(word, sysid);
                 res.add(term);
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
