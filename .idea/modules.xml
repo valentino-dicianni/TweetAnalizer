@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/tesi.iml" filepath="$PROJECT_DIR$/tesi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tesi_twitAnalizer.iml" filepath="$PROJECT_DIR$/Tesi_twitAnalizer.iml" />
     </modules>
   </component>
 </project>
