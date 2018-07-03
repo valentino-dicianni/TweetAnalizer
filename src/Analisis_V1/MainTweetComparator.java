@@ -43,7 +43,7 @@ public class MainTweetComparator {
         TTCSInterface.resetTable();
 
         return score;
-        //prova di ritorno 2
+        //prova di ritorno 3
 
     }
 
