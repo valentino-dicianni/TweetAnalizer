@@ -43,6 +43,7 @@ public class MainTweetComparator {
         TTCSInterface.resetTable();
 
         return score;
+
     }
 
     public static void main(String[] args) {
