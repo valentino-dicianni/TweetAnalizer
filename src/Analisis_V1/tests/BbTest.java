@@ -18,14 +18,14 @@ public class BbTest {
         System.out.println("\n------\n");
 
 
-
-        try {
-            TTCSInterface.launch("{[bn:00015267n,bn:00004222n],[bn:00048144n,bn:00006125n],[bn:00047481n,bn:00079663n]}");
-            TTCSInterface.print();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//
+//        try {
+//           TTCSInterface.launch("{[bn:00015267n,bn:00004222n],[bn:00048144n,bn:00006125n],[bn:00047481n,bn:00079663n]}");
+//            TTCSInterface.print();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

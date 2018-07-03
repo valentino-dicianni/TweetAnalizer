@@ -24,6 +24,7 @@ public class CorpusCreator {
         this.bbfy = new BFYidGetter(Language.IT);
         this.tfidfCalculation = new TFIDFCalculation();
         this.corpus = new Vector<>();
+
     }
 
     // Create a corpus from a JSON file
@@ -62,6 +63,7 @@ public class CorpusCreator {
                 CorpusObj co = new CorpusObj(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"));
                 corpus.add(co);
             }
+            System.out.println("Corpus creato con Succsso...\n");
 
         } catch (JSONException | IOException e) {
             e.printStackTrace();

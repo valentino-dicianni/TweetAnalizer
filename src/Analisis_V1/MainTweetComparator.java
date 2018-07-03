@@ -34,7 +34,6 @@ public class MainTweetComparator {
                 for (Concept t : obj.getConcepts()) {
                     sc += (TTCSInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
-
             }
             // normalizza per la lunghezza dei documenti
             score.add(sc / obj.getNumWords());
@@ -60,8 +59,6 @@ public class MainTweetComparator {
 
         CorpusCreator corpusCreator = new CorpusCreator("corpus/JSONcorpus/jsonCorpus.json");
         corpus = corpusCreator.getCorpus();
-
-        System.out.println("Corpus creato con Succsso...\n");
 
 
         //todo: implementare tweet reader
