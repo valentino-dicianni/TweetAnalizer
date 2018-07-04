@@ -6,19 +6,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
-public class CorpusCreator {
+public class CorpusManager {
     private  String CORPUS_PATH;
     private  String TEMP_PATH;
-
     private  BFYidGetter bbfy;
     private  TFIDFCalculation tfidfCalculation;
     private  Vector<CorpusObj> corpus;
 
-    public CorpusCreator(String corpusPath, String tempPath){
+    public CorpusManager(String corpusPath, String tempPath){
         this.CORPUS_PATH = corpusPath;
         this.TEMP_PATH = tempPath;
         this.bbfy = new BFYidGetter(Language.IT);
@@ -27,10 +24,10 @@ public class CorpusCreator {
     }
 
     // Create a corpus from a JSON file
-    public CorpusCreator(String jsonPath){
+    public CorpusManager(String jsonPath){
         this.corpus = new Vector<>();
-
         JSONArray jsonArray = null;
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(jsonPath));
             StringBuilder sb = new StringBuilder();
@@ -41,7 +38,6 @@ public class CorpusCreator {
                 line = br.readLine();
             }
             String str = sb.toString();
-
             jsonArray = new JSONArray(str);
 
             for(int i=0 ; i< jsonArray.length(); i++){
@@ -55,10 +51,9 @@ public class CorpusCreator {
                     String sysid = (String) ca.getJSONObject(j).get("sysid");
                     double weigth = (double) ca.getJSONObject(j).get("weigth");
                     Concept concept = new Concept(term,sysid,weigth);
-                    vectorConcepts.add(concept);
-
+                    if(!vectorConcepts.contains(concept))
+                        vectorConcepts.add(concept);
                 }
-
                 CorpusObj co = new CorpusObj(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"));
                 corpus.add(co);
             }
@@ -67,20 +62,52 @@ public class CorpusCreator {
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public Vector<CorpusObj> getCorpus() {
         return corpus;
     }
 
-    private  CorpusObj disambiguation(String str, String path){
+    public Vector<CorpusObj> createCorpus() {
+        File folder = new File(CORPUS_PATH);
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+        System.out.println("Inizio creazione Corpus...");
+
+        if (listOfFiles != null) {
+            for(File file : listOfFiles){
+                try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    StringBuilder sb = new StringBuilder();
+                    String line = br.readLine();
+
+                    while (line != null) {
+                        sb.append(line);
+                        sb.append(System.lineSeparator());
+                        line = br.readLine();
+                    }
+                    CorpusObj tmpObj = disambiguation(sb.toString(), file.getPath());
+                    createTempCorpus(file.getName(), tmpObj);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("Disambiguazione eseguita...");
+            executeTFIDF(TEMP_PATH);
+            System.out.println("TF-IDF calcolato...");
+            for( CorpusObj co : corpus)
+                co.assignWeigths();
+        }
+        outputJSONcorpus();
+        return this.corpus;
+    }
+
+    private CorpusObj disambiguation(String str, String path){
         CorpusObj corpusObj = new CorpusObj(path,str, bbfy.executePost(str));
         corpus.add(corpusObj);
         return corpusObj;
     }
 
-    private  void executeTFIDF(String path) {
+    private void executeTFIDF(String path) {
         int count = 0;
         File folder = new File(path);
 
@@ -131,14 +158,13 @@ public class CorpusCreator {
                 for (CorpusObj obj : corpus){
                     if(obj.path.equals(CORPUS_PATH+file.getName())){
                         obj.setTfidfTable(tfIDFTable);
-
                     }
                 }
             }
         }
     }
 
-    private  void createTempCorpus(String name, CorpusObj obj){
+    private void createTempCorpus(String name, CorpusObj obj){
         PrintWriter writer = null;
         try {
             String text = obj.termsToString();
@@ -149,15 +175,24 @@ public class CorpusCreator {
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
     }
 
-    public  void outputJSONcorpus(){
+    public void getMoreSignificantPart(int n) {
+        for (CorpusObj co : corpus) {
+            Vector<Concept> concepts = co.getConcepts();
+            concepts.sort(Comparator.comparingDouble(Concept::getWeigth));
+            Collections.reverse(concepts);
+            concepts.setSize(n);
+        }
+    }
+
+
+
+    public void outputJSONcorpus(){
         JSONArray jsonArray = new JSONArray();
 
         for (CorpusObj co : corpus) {
             JSONObject json = new JSONObject();
-
             try {
                 json.put("path", co.path);
                 json.put("content", co.getContent());
@@ -171,7 +206,6 @@ public class CorpusCreator {
             }
             jsonArray.put(json);
         }
-
         try {
             FileWriter file = new FileWriter("corpus/JSONcorpus/jsonCorpus.json");
             jsonArray.write(file);
@@ -180,44 +214,7 @@ public class CorpusCreator {
 
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-    }
-    }
-
-    public  Vector<CorpusObj> createCorpus() {
-        File folder = new File(CORPUS_PATH);
-        File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
-        System.out.println("Inizio creazione Corpus...");
-
-        if (listOfFiles != null) {
-            for(File file : listOfFiles){
-
-                try(BufferedReader br = new BufferedReader(new FileReader(file))) {
-                    StringBuilder sb = new StringBuilder();
-                    String line = br.readLine();
-
-                    while (line != null) {
-                        sb.append(line);
-                        sb.append(System.lineSeparator());
-                        line = br.readLine();
-                    }
-
-                    CorpusObj tmp = disambiguation(sb.toString(), file.getPath());
-                    createTempCorpus(file.getName(), tmp);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println("Disambiguazione eseguita...");
-            executeTFIDF(TEMP_PATH);
-            System.out.println("TF-IDF calcolato...");
-            for( CorpusObj co : corpus)
-                co.assignWeigths();
-
         }
-        outputJSONcorpus();
-        return this.corpus;
-
     }
 
 }

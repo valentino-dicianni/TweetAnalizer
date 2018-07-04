@@ -32,4 +32,18 @@ public class Concept {
        this.sysid = id;
        this.weigth = weigth;
    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Concept))return false;
+        Concept obj = (Concept)o;
+        return this.term.equals(obj.term) && this.term.equals(obj.term)
+                && this.weigth == obj.weigth;
+    }
+
+    @Override
+    public String toString() {
+        return term + " @ "+ weigth;
+    }
+
 }

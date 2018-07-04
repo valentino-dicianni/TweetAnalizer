@@ -57,9 +57,9 @@ public class TweetReader {
 
 
     public Vector<String> getIDsFromTweet(String tweet){
-        Vector<Concept> terms = bbfy.executePost(tweet);
+        Vector<Concept> concepts = bbfy.executePost(tweet);
         Vector<String> ids = new Vector<>();
-        for(Concept t : terms){
+        for(Concept t : concepts){
             ids.add(t.getSysid());
         }
         return ids;

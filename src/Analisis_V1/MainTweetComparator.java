@@ -8,6 +8,8 @@ import java.util.Vector;
 
 public class MainTweetComparator {
 
+    private final static int NUM_CONCEPTS = 10;
+
     /**
      * Main method: compare the imput tweet with che corpus of documents and returns a
      * vector vith the result scores.
@@ -44,8 +46,9 @@ public class MainTweetComparator {
                     sc += (TTCSInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
             }
-            // TODO: togliere dopo ultime modifiche Nomalize doc length
-            score.add(sc / obj.getNumWords());
+            // Nomalize doc length
+            //score.add(sc / obj.getNumWords());
+            score.add(sc);
         }
 
         // Reset tfidfTable
@@ -63,11 +66,13 @@ public class MainTweetComparator {
 
         TweetReader tweetReader = new TweetReader();
 
-        //CorpusCreator corpusCreator = new CorpusCreator(corpusPath,tempPath);
-        //corpus = corpusCreator.createCorpus();
+        //CorpusManager corpusManager = new CorpusManager(corpusPath,tempPath);
+        //corpus = corpusManager.createCorpus();
 
-        CorpusCreator corpusCreator = new CorpusCreator("corpus/JSONcorpus/jsonCorpus.json");
-        corpus = corpusCreator.getCorpus();
+        CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
+
+        //Optimization
+        corpusManager.getMoreSignificantPart(NUM_CONCEPTS);
 
 
         //todo: implementare tweet reader
@@ -76,6 +81,7 @@ public class MainTweetComparator {
 
         System.out.println("\nRisultati ottenuti:\n");
 
+        corpus = corpusManager.getCorpus();
         try {
             Vector<Double> res = compare(corpus, tweetIDs);
             int best = 0;

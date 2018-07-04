@@ -30,7 +30,8 @@ public class BFYidGetter {
 
 
     /**
-     * Send a GET request to Babelfy with an input text and returns a list of sysID.
+     * Send a GET request to Babelfy with an input text and returns a list of concepts
+     * with the corresponding sysID.
      *
      * @param text in input to Babelfy
      * @return a vector of {@code Concept} from the text
@@ -112,8 +113,9 @@ public class BFYidGetter {
 
                 String word = text.substring(start,end).toLowerCase();
                 String sysid = jsonObject.getString("babelSynsetID");
-                Concept term = new Concept(word, sysid);
-                res.add(term);
+                Concept concept = new Concept(word, sysid);
+                if(!res.contains(concept))
+                    res.add(concept);
             }
         } catch (JSONException e) {
             e.printStackTrace();
