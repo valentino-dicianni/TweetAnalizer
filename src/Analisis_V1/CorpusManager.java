@@ -15,10 +15,10 @@ public class CorpusManager {
     private  TFIDFCalculation tfidfCalculation;
     private  Vector<CorpusObj> corpus;
 
-    public CorpusManager(String corpusPath, String tempPath){
+    public CorpusManager(String corpusPath, String tempPath, Language lang){
         this.CORPUS_PATH = corpusPath;
         this.TEMP_PATH = tempPath;
-        this.bbfy = new BFYidGetter(Language.IT);
+        this.bbfy = new BFYidGetter(lang);
         this.tfidfCalculation = new TFIDFCalculation();
         this.corpus = new Vector<>();
     }
@@ -44,12 +44,13 @@ public class CorpusManager {
                 Vector<Concept> vectorConcepts = new Vector<>();
 
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                JSONArray ca = (JSONArray)jsonObject.get("concepts");
+                JSONArray conceptsArray = (JSONArray)jsonObject.get("concepts");
 
-                for(int j=0 ; j< ca.length(); j++){
-                    String term = (String) ca.getJSONObject(j).get("string");
-                    String sysid = (String) ca.getJSONObject(j).get("sysid");
-                    double weigth = (double) ca.getJSONObject(j).get("weigth");
+                for(int j=0 ; j< conceptsArray.length(); j++){
+                    String term = (String) conceptsArray.getJSONObject(j).get("string");
+                    String sysid = (String) conceptsArray.getJSONObject(j).get("sysid");
+                    double weigth = (double) conceptsArray.getJSONObject(j).get("weigth");
+
                     Concept concept = new Concept(term,sysid,weigth);
                     if(!vectorConcepts.contains(concept))
                         vectorConcepts.add(concept);
@@ -70,7 +71,7 @@ public class CorpusManager {
 
     public Vector<CorpusObj> createCorpus() {
         File folder = new File(CORPUS_PATH);
-        File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt")); //TODO: altri tipi di file testuali
         System.out.println("Inizio creazione Corpus...");
 
         if (listOfFiles != null) {
@@ -91,13 +92,13 @@ public class CorpusManager {
                     e.printStackTrace();
                 }
             }
-            System.out.println("Disambiguazione eseguita...");
+            System.out.println("Disambiguation executed...");
             executeTFIDF(TEMP_PATH);
-            System.out.println("TF-IDF calcolato...");
+            System.out.println("TF-IDF executed...");
             for( CorpusObj co : corpus)
                 co.assignWeigths();
         }
-        outputJSONcorpus();
+        outputJSONcorpus("");
         return this.corpus;
     }
 
@@ -111,13 +112,13 @@ public class CorpusManager {
         int count = 0;
         File folder = new File(path);
 
-        // per ogni file nell directory path, tranne altre directory e file nascosti.
+        // for every file in the directory except for hidden ones
         File[] listOfFiles = folder.listFiles(file -> !file.isDirectory() && !file.isHidden());
         if (listOfFiles != null) {
 
             // Get wordcount from files and calculate TermFrequency
-            int noOfDocs = listOfFiles.length;
-            DocumentProperties[] docProperties = new DocumentProperties[noOfDocs];
+            int numOfDocs = listOfFiles.length;
+            DocumentProperties[] docProperties = new DocumentProperties[numOfDocs];
 
             for (File file : listOfFiles) {
                 if (file.isFile()) {
@@ -138,7 +139,7 @@ public class CorpusManager {
             for (File file : listOfFiles) {
                 HashMap<String,Double> tfIDFTable = new HashMap<>();
                 if (file.isFile()) {
-                    double tfIdfValue = 0.0;
+                    double tfIdfValue;
                     double idfVal = 0.0;
                     HashMap<String,Double> tf = docProperties[count].getTermFreqMap();
 
@@ -165,7 +166,7 @@ public class CorpusManager {
     }
 
     private void createTempCorpus(String name, CorpusObj obj){
-        PrintWriter writer = null;
+        PrintWriter writer;
         try {
             String text = obj.termsToString();
             writer = new PrintWriter(TEMP_PATH + name, "UTF-8");
@@ -177,7 +178,16 @@ public class CorpusManager {
         }
     }
 
-    public void getMoreSignificantPart(int n) {
+    /**
+     * This method is essential to reduce the amount of work on Cover server.
+     * Depending on the accuracy of the output you want to get from the Concept Similarity
+     * calculation, this method set a limit to the number of concept to analise
+     * for every document inside the corpus, taking into account only
+     * the N most significant concepts.
+     *
+     * @param n is the number of concepts taken into consideration.
+     */
+    public void setLimitConcepts(int n) {
         for (CorpusObj co : corpus) {
             Vector<Concept> concepts = co.getConcepts();
             concepts.sort(Comparator.comparingDouble(Concept::getWeigth));
@@ -186,9 +196,15 @@ public class CorpusManager {
         }
     }
 
-
-
-    public void outputJSONcorpus(){
+    /**
+     * Exports the created corpus of documents into a JSON file,
+     * to avoid creating the entire corpus from scratch
+     * every time the program is called with the same corpus.
+     *
+     * @param path is the name to specify if you want to give a different name path to the
+     *             output file.
+     */
+    public void outputJSONcorpus(String path){
         JSONArray jsonArray = new JSONArray();
 
         for (CorpusObj co : corpus) {
@@ -207,7 +223,7 @@ public class CorpusManager {
             jsonArray.put(json);
         }
         try {
-            FileWriter file = new FileWriter("corpus/JSONcorpus/jsonCorpus.json");
+            FileWriter file = new FileWriter("corpus/JSONcorpus/jsonCorpus"+"_"+path+".json");
             jsonArray.write(file);
             file.flush();
             file.close();

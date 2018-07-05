@@ -2,13 +2,16 @@ package Analisis_V1;
 
 import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.CorpusObj;
+import Analisis_V1.utils.Language;
 
 import java.io.IOException;
 import java.util.Vector;
 
 public class MainTweetComparator {
 
-    private final static int NUM_CONCEPTS = 10;
+    //TODO: nella tfidf table ci sono pochiessimi concetti--> nel temp file se ne trovano pochi, capire perchè
+
+    private final static int NUM_CONCEPTS = 8;
 
     /**
      * Main method: compare the imput tweet with che corpus of documents and returns a
@@ -36,7 +39,7 @@ public class MainTweetComparator {
         res += "}";
 
         TTCSInterface.launch("vdicianni","Tavol15pork1" ,res);
-        //TTCSInterface.print();
+        TTCSInterface.print();
 
         //Compose results
         for(CorpusObj obj : corpus) {
@@ -66,13 +69,13 @@ public class MainTweetComparator {
 
         TweetReader tweetReader = new TweetReader();
 
-        //CorpusManager corpusManager = new CorpusManager(corpusPath,tempPath);
-        //corpus = corpusManager.createCorpus();
+        CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
+        corpus = corpusManager.createCorpus();
 
-        CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
+        //CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
         //Optimization
-        corpusManager.getMoreSignificantPart(NUM_CONCEPTS);
+        corpusManager.setLimitConcepts(NUM_CONCEPTS);
 
 
         //todo: implementare tweet reader

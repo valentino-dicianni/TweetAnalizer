@@ -37,17 +37,17 @@ public class CorpusObj {
         return tfidfTable;
     }
 
-    private int calculateNumWords(String content) {
-        String[] words = content.replaceAll("[^a-zA-Z0-9]", " ").split("\\s+");
-        return words.length;
-    }
-
     public Vector<Concept> getConcepts() {
         return concepts;
     }
 
     public String getContent() {
         return content;
+    }
+
+    private int calculateNumWords(String content) {
+        String[] words = content.replaceAll("[^a-zA-Z0-9]", " ").split("\\s+");
+        return words.length;
     }
 
     public String termsToString(){
@@ -65,7 +65,7 @@ public class CorpusObj {
             for (String str : pieces) {
                 if (tfidfTable.get(str) != null)
                     concept.setWeigth(concept.getWeigth() + tfidfTable.get(str));
-                else System.out.println("---> ERROR getting weigths from tfidfTable Concept: " + concept.getString());
+                else System.out.println("ERROR getting weigths from tfidfTable Concept: " + concept.getString());
             }
             //System.out.println( "TERM: " +  term.getString() + "\tWeigth: " + term.getWeigth() + "\tSYSID: " + term.getSysid());
         }

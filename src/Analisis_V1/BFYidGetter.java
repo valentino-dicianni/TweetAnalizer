@@ -1,12 +1,18 @@
 package Analisis_V1;
 
 import Analisis_V1.utils.Concept;
+import Analisis_V1.utils.HtmlEntities;
 import Analisis_V1.utils.Language;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.*;
-import java.net.*;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 
@@ -14,7 +20,6 @@ public class BFYidGetter {
     private String key = "441df9e4-7a0a-4d36-ad66-d38294c1dcd4";
     private String service_url = "https://babelfy.io/v1/disambiguate";
     private Language lang;
-
 
     public BFYidGetter(Language lang){
         this.lang = lang;
@@ -37,13 +42,15 @@ public class BFYidGetter {
      * @return a vector of {@code Concept} from the text
      */
     public Vector<Concept> executePost(String text) {
-        String urlParameters   = "text="+text+"&lang="+lang.toString()+"&key="+key;
+        String encoded         = HtmlEntities.encode(text);
+        String urlParameters   = "text="+encoded+"&lang="+lang.toString()+"&key="+key;
         byte[] postData        = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int    postDataLength  = postData.length;
         HttpURLConnection conn = null;
         Vector<Concept> result = new Vector<>();
 
         try {
+
             conn = connectToServer();
             conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
@@ -118,7 +125,8 @@ public class BFYidGetter {
                     res.add(concept);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+           System.out.println("ERROR: "+ response);
+
         }
     }
 

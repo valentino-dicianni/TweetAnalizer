@@ -105,7 +105,4 @@ public class TFIDFCalculation {
         writer.write(content);
         writer.close();
     }
-
-
-
 }
