@@ -32,7 +32,6 @@ public class BFYidGetter {
         this.lang = lang;
     }
 
-
     /**
      * Send a GET request to Babelfy with an input text and returns a list of concepts
      * with the corresponding sysID.

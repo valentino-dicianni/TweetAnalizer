@@ -69,7 +69,7 @@ public class CorpusManager {
         return corpus;
     }
 
-    public Vector<CorpusObj> createCorpus() {
+    public void createCorpus() {
         File folder = new File(CORPUS_PATH);
         File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt")); //TODO: altri tipi di file testuali
         System.out.println("Begin Corpus creation...");
@@ -101,13 +101,25 @@ public class CorpusManager {
                 co.assignWeigths();
         }
         outputJSONcorpus("");//TODO mettere a posto
-        return this.corpus;
     }
 
     private CorpusObj disambiguation(String str, String path){
         CorpusObj corpusObj = new CorpusObj(path,str, bbfy.executePost(str));
         corpus.add(corpusObj);
         return corpusObj;
+    }
+
+    private void createTempCorpus(String name, CorpusObj obj){
+        PrintWriter writer;
+        try {
+            String text = obj.termsToString();
+            writer = new PrintWriter(TEMP_PATH + name, "UTF-8");
+            writer.println(text);
+            writer.close();
+
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void executeTFIDF(String path) {
@@ -164,19 +176,6 @@ public class CorpusManager {
                     }
                 }
             }
-        }
-    }
-
-    private void createTempCorpus(String name, CorpusObj obj){
-        PrintWriter writer;
-        try {
-            String text = obj.termsToString();
-            writer = new PrintWriter(TEMP_PATH + name, "UTF-8");
-            writer.println(text);
-            writer.close();
-
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
     }
 

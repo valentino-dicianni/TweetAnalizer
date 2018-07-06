@@ -9,11 +9,10 @@ import java.util.Vector;
 
 public class MainTweetComparator {
 
-    private static long start;
     private static long elapsedTimeMillisec;
     private final static int NUM_CONCEPTS = 10;
-    private final static String corpusPath = "corpus/vaccini_press/";
-    private final static String tempPath = "corpus/vaccini_press/temp/";
+    private final static String corpusPath = "corpus/press/";
+    private final static String tempPath = "corpus/press/temp/";
 
     /**
      * Main method: compare the imput tweet with che corpus of documents and returns a
@@ -66,26 +65,24 @@ public class MainTweetComparator {
     public static void main(String[] args) {
         Vector<CorpusObj> corpus;
         Vector<String> tweetIDs;
+        long start = System.currentTimeMillis();
 
         TweetReader tweetReader = new TweetReader();
+        //todo: implementare tweet reader
+        tweetIDs = tweetReader.getIDsFromTweet("la zanzara è un'insetto che provoca punture fastidiose" );
 
-        start = System.currentTimeMillis();
+
 
         CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
-        corpus = corpusManager.createCorpus();
+        corpusManager.createCorpus();
 
         //CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
         //Optimization
         corpusManager.setLimitConcepts(NUM_CONCEPTS);
 
-
-        //todo: implementare tweet reader
-        tweetIDs = tweetReader.getIDsFromTweet("Ennesima tragedia in mare. Bambini morti per l'idiozia di qualche politico. complimenti ministro Salvini" );
-
+        corpus = corpusManager.getCorpus();
         System.out.println("\nRisultati ottenuti:\n");
-
-        //corpus = corpusManager.getCorpus();
         try {
             Vector<Double> res = compare(corpus, tweetIDs);
             elapsedTimeMillisec += System.currentTimeMillis() - start;
@@ -96,6 +93,7 @@ public class MainTweetComparator {
             }
 
             System.out.println("\n##### Best Similarity in "+elapsedTimeMillisec/1000+" second #####\n");
+            System.out.println(corpus.get(best).path);
             System.out.println(corpus.get(best).getContent());
 
         } catch (IOException e) {
