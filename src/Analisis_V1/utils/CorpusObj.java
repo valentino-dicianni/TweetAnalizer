@@ -67,7 +67,6 @@ public class CorpusObj {
                     concept.setWeigth(concept.getWeigth() + tfidfTable.get(str));
                 else System.out.println("ERROR getting weigths from tfidfTable Concept: " + concept.getString());
             }
-            //System.out.println( "TERM: " +  term.getString() + "\tWeigth: " + term.getWeigth() + "\tSYSID: " + term.getSysid());
         }
     }
 

@@ -4,8 +4,6 @@ import Analisis_V1.utils.DocumentProperties;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class TFIDFCalculation {
@@ -48,16 +46,6 @@ public class TFIDFCalculation {
         }
         return termFreqMap;
     }
-
-    //Returns if input contains numbers or not
-    private boolean isDigit(String input) {
-        String regex = "(.)*(\\d)(.)*";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
-
-        return matcher.matches();
-    }
-
 
     // Converts the input text file to hashmap and even dumps the final output as CSV files
     public HashMap<String, Integer> getTermsFromFile(String Filename, int count, File folder) {

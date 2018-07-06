@@ -72,7 +72,7 @@ public class CorpusManager {
     public Vector<CorpusObj> createCorpus() {
         File folder = new File(CORPUS_PATH);
         File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt")); //TODO: altri tipi di file testuali
-        System.out.println("Inizio creazione Corpus...");
+        System.out.println("Begin Corpus creation...");
 
         if (listOfFiles != null) {
             for(File file : listOfFiles){
@@ -85,7 +85,9 @@ public class CorpusManager {
                         sb.append(System.lineSeparator());
                         line = br.readLine();
                     }
-                    CorpusObj tmpObj = disambiguation(sb.toString(), file.getPath());
+
+                    String text = sb.toString().replaceAll("[^a-zA-Z0-9òàèù.,']+"," ");
+                    CorpusObj tmpObj = disambiguation(text, file.getPath());
                     createTempCorpus(file.getName(), tmpObj);
 
                 } catch (IOException e) {
@@ -98,7 +100,7 @@ public class CorpusManager {
             for( CorpusObj co : corpus)
                 co.assignWeigths();
         }
-        outputJSONcorpus("");
+        outputJSONcorpus("");//TODO mettere a posto
         return this.corpus;
     }
 
@@ -223,7 +225,7 @@ public class CorpusManager {
             jsonArray.put(json);
         }
         try {
-            FileWriter file = new FileWriter("corpus/JSONcorpus/jsonCorpus"+"_"+path+".json");
+            FileWriter file = new FileWriter("corpus/JSONcorpus/jsonCorpus"+path+".json");
             jsonArray.write(file);
             file.flush();
             file.close();
@@ -232,5 +234,4 @@ public class CorpusManager {
             e.printStackTrace();
         }
     }
-
 }

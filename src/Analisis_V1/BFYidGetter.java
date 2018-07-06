@@ -41,8 +41,7 @@ public class BFYidGetter {
      * @return a vector of {@code Concept} from the text
      */
     public Vector<Concept> executePost(String text) {
-        String res             = text.replaceAll("[^a-zA-Z0-9òàèù.,']+"," ");
-        String urlParameters   = "text="+res+"&lang="+lang.toString()+"&key="+key;
+        String urlParameters   = "text="+text+"&lang="+lang.toString()+"&key="+key;
         byte[] postData        = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int    postDataLength  = postData.length;
         HttpURLConnection conn = null;

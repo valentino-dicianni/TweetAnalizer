@@ -9,9 +9,11 @@ import java.util.Vector;
 
 public class MainTweetComparator {
 
-    //TODO: nella tfidf table ci sono pochiessimi concetti--> nel temp file se ne trovano pochi, capire perchè
-
-    private final static int NUM_CONCEPTS = 8;
+    private static long start;
+    private static long elapsedTimeMillisec;
+    private final static int NUM_CONCEPTS = 10;
+    private final static String corpusPath = "corpus/vaccini_press/";
+    private final static String tempPath = "corpus/vaccini_press/temp/";
 
     /**
      * Main method: compare the imput tweet with che corpus of documents and returns a
@@ -39,7 +41,7 @@ public class MainTweetComparator {
         res += "}";
 
         TTCSInterface.launch("vdicianni","Tavol15pork1" ,res);
-        TTCSInterface.print();
+        //TTCSInterface.print();
 
         //Compose results
         for(CorpusObj obj : corpus) {
@@ -62,12 +64,12 @@ public class MainTweetComparator {
     }
 
     public static void main(String[] args) {
-        final String corpusPath = "corpus/press_test/";
-        final String tempPath = "corpus/press_test/temp/";
         Vector<CorpusObj> corpus;
         Vector<String> tweetIDs;
 
         TweetReader tweetReader = new TweetReader();
+
+        start = System.currentTimeMillis();
 
         CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
         corpus = corpusManager.createCorpus();
@@ -79,21 +81,21 @@ public class MainTweetComparator {
 
 
         //todo: implementare tweet reader
-        System.out.println("Analisi tweet in input: 'Il teorema di Godel è una vera innovazione: chi non ama la logica formale! #godel #nelcuore' ");
-        tweetIDs = tweetReader.getIDsFromTweet("Il teorema di Godel è una vera innovazione: chi non ama la logica formale! #goedel #nelcuore");
+        tweetIDs = tweetReader.getIDsFromTweet("Ennesima tragedia in mare. Bambini morti per l'idiozia di qualche politico. complimenti ministro Salvini" );
 
         System.out.println("\nRisultati ottenuti:\n");
 
         //corpus = corpusManager.getCorpus();
         try {
             Vector<Double> res = compare(corpus, tweetIDs);
+            elapsedTimeMillisec += System.currentTimeMillis() - start;
             int best = 0;
             for (int i = 0; i < res.size();  i++){
                 System.out.println(corpus.get(i) + "/ - Scored: " + res.elementAt(i));
                 if ( res.elementAt(i) > res.elementAt(best)) best = i;
             }
 
-            System.out.println("\n------ Best Similarity ------\n");
+            System.out.println("\n##### Best Similarity in "+elapsedTimeMillisec/1000+" second #####\n");
             System.out.println(corpus.get(best).getContent());
 
         } catch (IOException e) {
