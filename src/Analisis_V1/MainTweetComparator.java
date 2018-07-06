@@ -62,8 +62,8 @@ public class MainTweetComparator {
     }
 
     public static void main(String[] args) {
-        final String corpusPath = "corpus/press/";
-        final String tempPath = "corpus/press/temp/";
+        final String corpusPath = "corpus/press_test/";
+        final String tempPath = "corpus/press_test/temp/";
         Vector<CorpusObj> corpus;
         Vector<String> tweetIDs;
 
@@ -84,7 +84,7 @@ public class MainTweetComparator {
 
         System.out.println("\nRisultati ottenuti:\n");
 
-        corpus = corpusManager.getCorpus();
+        //corpus = corpusManager.getCorpus();
         try {
             Vector<Double> res = compare(corpus, tweetIDs);
             int best = 0;
