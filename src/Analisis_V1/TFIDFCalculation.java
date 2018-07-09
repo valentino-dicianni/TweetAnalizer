@@ -9,7 +9,33 @@ import java.util.*;
 public class TFIDFCalculation {
     private SortedSet<String> wordList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
-    //Calculates inverse Doc frequency.
+    /**
+     * Calculates the Term Frequency taking the counter map of terms in all documents.
+     *
+     * @param inputMap the input map of terms
+     * @return a new HashMap with the term frequency
+     */
+    public HashMap<String,Double> calculateTermFrequency(HashMap<String, Integer> inputMap) {
+        HashMap<String ,Double> termFreqMap = new HashMap<>();
+        double sum = 0.0;
+        //Get the sum of all elements in hashmap
+        for (float val : inputMap.values()) {
+            sum += val;
+        }
+
+        //create a new hashMap with Tf values in it.
+        for (Map.Entry<String, Integer> pair : inputMap.entrySet()) {
+            double tf = pair.getValue() / sum;
+            termFreqMap.put((pair.getKey()), tf);
+        }
+        return termFreqMap;
+    }
+
+    /**
+     * Calculate the Inverse Doc Frequency
+     * @param docProperties
+     * @return
+     */
     public HashMap<String,Double> calculateInverseDocFrequency(DocumentProperties[] docProperties) {
       HashMap<String,Double> InverseDocFreqMap = new HashMap<>();
       int size = docProperties.length;
@@ -28,23 +54,6 @@ public class TFIDFCalculation {
           InverseDocFreqMap.put(word,idf);
       }
       return InverseDocFreqMap;
-    }
-
-    //calculates Concept frequency for all terms
-    public HashMap<String,Double> calculateTermFrequency(HashMap<String, Integer> inputMap) {
-        HashMap<String ,Double> termFreqMap = new HashMap<>();
-        double sum = 0.0;
-        //Get the sum of all elements in hashmap
-        for (float val : inputMap.values()) {
-            sum += val;
-        }
-
-        //create a new hashMap with Tf values in it.
-        for (Map.Entry<String, Integer> pair : inputMap.entrySet()) {
-            double tf = pair.getValue() / sum;
-            termFreqMap.put((pair.getKey()), tf);
-        }
-        return termFreqMap;
     }
 
     // Converts the input text file to hashmap and even dumps the final output as CSV files

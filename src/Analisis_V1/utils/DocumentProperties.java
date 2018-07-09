@@ -18,7 +18,6 @@ public class DocumentProperties{
         termFreqMap = new HashMap<>(inMap);
     }
 
-
     public void setWordCountMap(HashMap<String, Integer> inMap) {
         DocWordCounts = new HashMap<>(inMap);
     }

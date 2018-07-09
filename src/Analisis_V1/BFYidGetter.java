@@ -77,7 +77,6 @@ public class BFYidGetter {
         return result;
     }
 
-
     /**
      * ConnectToServer utility for connection to Babelfy.
      *
@@ -126,12 +125,4 @@ public class BFYidGetter {
 
         }
     }
-
-
-
-
-
-
-
-
 }

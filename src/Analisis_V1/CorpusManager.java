@@ -15,18 +15,31 @@ public class CorpusManager {
     private  TFIDFCalculation tfidfCalculation;
     private  Vector<CorpusObj> corpus;
 
+    /**
+     * CorpusManager constructor for creating a new corpus from scratch, using
+     * text files.
+     *
+     * @param corpusPath corpus directory path
+     * @param tempPath temporary corpus path
+     * @param lang language af the documents
+     */
     public CorpusManager(String corpusPath, String tempPath, Language lang){
         this.CORPUS_PATH = corpusPath;
         this.TEMP_PATH = tempPath;
         this.bbfy = new BFYidGetter(lang);
         this.tfidfCalculation = new TFIDFCalculation();
         this.corpus = new Vector<>();
+        createCorpus();
     }
 
-    // Create a corpus from a JSON file
+    /**
+     * CorpusManager constructor using a JSON file
+     *
+     * @param jsonPath path to the json file
+     */
     public CorpusManager(String jsonPath){
         this.corpus = new Vector<>();
-        JSONArray jsonArray = null;
+        JSONArray jsonArray;
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(jsonPath));
@@ -69,9 +82,19 @@ public class CorpusManager {
         return corpus;
     }
 
-    public void createCorpus() {
+    /**
+     * Create a complete corpus from document files.
+     * It follows a few steps:
+     *
+     * 1) read files and replace all unsupported characters.
+     * 2) execute the disambiguation
+     * 3) execute the TF-IDF calculation
+     * 4) assign weights to che CorpusObj
+     * 5) create a JSON file for future execution on the same corpus
+     */
+    private void createCorpus() {
         File folder = new File(CORPUS_PATH);
-        File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt")); //TODO: altri tipi di file testuali
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
         System.out.println("Begin Corpus creation...");
 
         if (listOfFiles != null) {
@@ -103,12 +126,28 @@ public class CorpusManager {
         outputJSONcorpus("");//TODO mettere a posto
     }
 
+    /**
+     * Execute the call to {@code bbfy.executePost()} passing a string.
+     * Create a new {@code CorpusObj} add adds it to the corpus.
+     *
+     * @param str the string to disambiguate
+     * @param path the file path
+     * @return returns the new CopusObj created
+     */
     private CorpusObj disambiguation(String str, String path){
-        CorpusObj corpusObj = new CorpusObj(path,str, bbfy.executePost(str));
+        CorpusObj corpusObj = new CorpusObj(path, str, bbfy.executePost(str));
         corpus.add(corpusObj);
         return corpusObj;
     }
 
+    /**
+     * Create a temporary corpus with all terms obtained from
+     * the disambiguation made by Babelfy, and store it into the temp directory.
+     * This temp corpus is useful for calculating the TF-IDF.
+     *
+     * @param name is the temporary file name
+     * @param obj is the the reference to a {@code CorpusObj}
+     */
     private void createTempCorpus(String name, CorpusObj obj){
         PrintWriter writer;
         try {
@@ -122,6 +161,14 @@ public class CorpusManager {
         }
     }
 
+    /**
+     * Fetch the list of text files found on the {@code path} and execute the
+     * TF-IDF algorithm. The first part calculate the Term Frequency of every document,
+     * then the Inverse Doc Frequency is stored into the {@code inverseDocFreqMap} hashMap.
+     * After that, every {@code CorpusObj} is assign with a TF-IDF table.
+     *
+     * @param path the corpus path.
+     */
     private void executeTFIDF(String path) {
         int count = 0;
         File folder = new File(path);
@@ -145,10 +192,10 @@ public class CorpusManager {
                 }
             }
 
-            //Calculatin IF
+            //Calculatin InverseDocFrequency
             HashMap<String,Double> inverseDocFreqMap = tfidfCalculation.calculateInverseDocFrequency(docProperties);
 
-            //Calculating tf-IDF
+            //Calculating TFc-IDF
             count = 0;
             for (File file : listOfFiles) {
                 HashMap<String,Double> tfIDFTable = new HashMap<>();

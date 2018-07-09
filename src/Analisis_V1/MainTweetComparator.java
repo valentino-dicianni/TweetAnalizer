@@ -9,7 +9,7 @@ import java.util.Vector;
 
 public class MainTweetComparator {
 
-    private static long elapsedTimeMillisec;
+    private static long elapsedTimeMillis;
     private final static int NUM_CONCEPTS = 10;
     private final static String corpusPath = "corpus/press/";
     private final static String tempPath = "corpus/press/temp/";
@@ -71,10 +71,7 @@ public class MainTweetComparator {
         //todo: implementare tweet reader
         tweetIDs = tweetReader.getIDsFromTweet("la zanzara è un'insetto che provoca punture fastidiose" );
 
-
-
         CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
-        corpusManager.createCorpus();
 
         //CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
@@ -85,14 +82,14 @@ public class MainTweetComparator {
         System.out.println("\nRisultati ottenuti:\n");
         try {
             Vector<Double> res = compare(corpus, tweetIDs);
-            elapsedTimeMillisec += System.currentTimeMillis() - start;
+            elapsedTimeMillis += System.currentTimeMillis() - start;
             int best = 0;
             for (int i = 0; i < res.size();  i++){
                 System.out.println(corpus.get(i) + "/ - Scored: " + res.elementAt(i));
                 if ( res.elementAt(i) > res.elementAt(best)) best = i;
             }
 
-            System.out.println("\n##### Best Similarity in "+elapsedTimeMillisec/1000+" second #####\n");
+            System.out.println("\n##### Best Similarity in "+ elapsedTimeMillis / 1000+" second #####\n");
             System.out.println(corpus.get(best).path);
             System.out.println(corpus.get(best).getContent());
 
