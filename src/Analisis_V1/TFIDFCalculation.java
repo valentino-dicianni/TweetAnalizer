@@ -32,12 +32,13 @@ public class TFIDFCalculation {
     }
 
     /**
-     * Calculate the Inverse Doc Frequency
-     * @param docProperties
-     * @return
+     * Calculate the Inverse Doc Frequency of all documents.
+     *
+     * @param docProperties array of documents with proprieties
+     * @return the HashMap with words and doc frequency
      */
     public HashMap<String,Double> calculateInverseDocFrequency(DocumentProperties[] docProperties) {
-      HashMap<String,Double> InverseDocFreqMap = new HashMap<>();
+      HashMap<String,Double> inverseDocFreqMap = new HashMap<>();
       int size = docProperties.length;
       double wordCount;
       
@@ -51,35 +52,39 @@ public class TFIDFCalculation {
           }
           double temp = size/ wordCount;
           double idf = 1 + Math.log(temp);
-          InverseDocFreqMap.put(word,idf);
+          inverseDocFreqMap.put(word,idf);
       }
-      return InverseDocFreqMap;
+      return inverseDocFreqMap;
     }
 
-    // Converts the input text file to hashmap and even dumps the final output as CSV files
-    public HashMap<String, Integer> getTermsFromFile(String Filename, int count, File folder) {
-        HashMap<String,Integer> WordCount = new HashMap<>();
-        BufferedReader reader = null;
+    /**
+     * Converts the input text file to hashmap of word and num of word.
+     *
+     * @param filePath the path to the file
+     * @return HashMap result with term and count
+     */
+    public HashMap<String, Integer> getTermsFromFile(String filePath) {
+        BufferedReader reader;
+        HashMap<String,Integer> wordCount = new HashMap<>();
         HashMap<String, Integer> finalMap = new HashMap<>();
         try {
-            reader = new BufferedReader(new FileReader(Filename));
+            reader = new BufferedReader(new FileReader(filePath));
             String line = reader.readLine();
             while(line!=null) {
                 String[] words = line.toLowerCase().split(" ");
                 for(String term : words) {
-
                     wordList.add(term);
-                    if(WordCount.containsKey(term)) {
-                        WordCount.put(term,WordCount.get(term)+1);
+                    if(wordCount.containsKey(term)) {
+                        wordCount.put(term,wordCount.get(term)+1);
                     }
                     else {
-                        WordCount.put(term,1);
+                        wordCount.put(term,1);
                     }
                 }
                 line = reader.readLine();
             }
             // sorting the hashmap
-            Map<String, Integer> treeMap = new TreeMap<>(WordCount);
+            Map<String, Integer> treeMap = new TreeMap<>(wordCount);
             finalMap = new HashMap<>(treeMap);
         }
         catch(IOException e) {
@@ -88,7 +93,13 @@ public class TFIDFCalculation {
         return finalMap;
     }
 
-    //Writes the contents of hashmap to CSV file
+    /**
+     * Writes the contents of hashmap to CSV file.
+     *
+     * @param treeMap the hashmap to output
+     * @param OutputPath the the output file path
+     * @throws IOException throws IO Exception
+     */
     public void outputAsCSV(HashMap<String, Double> treeMap, String OutputPath) throws IOException {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, Double> keymap : treeMap.entrySet()) {

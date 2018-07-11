@@ -184,7 +184,7 @@ public class CorpusManager {
             for (File file : listOfFiles) {
                 if (file.isFile()) {
                     docProperties[count] = new DocumentProperties();
-                    HashMap<String,Integer> wordCount = tfidfCalculation.getTermsFromFile(file.getAbsolutePath(),count, folder);
+                    HashMap<String,Integer> wordCount = tfidfCalculation.getTermsFromFile(file.getAbsolutePath());
                     docProperties[count].setWordCountMap(wordCount);
                     HashMap<String,Double> termFrequency = tfidfCalculation.calculateTermFrequency(docProperties[count].getWordCountMap());
                     docProperties[count].setTermFreqMap(termFrequency);
