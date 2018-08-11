@@ -41,6 +41,10 @@ public class CorpusObj {
         return concepts;
     }
 
+    public void setConcepts(Vector<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
     public String getContent() {
         return content;
     }

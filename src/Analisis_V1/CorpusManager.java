@@ -228,20 +228,38 @@ public class CorpusManager {
 
     /**
      * This method is essential to reduce the amount of work on Cover server.
-     * Depending on the accuracy of the output you want to get from the Concept Similarity
-     * calculation, this method set a limit to the number of concept to analise
-     * for every document inside the corpus, taking into account only
-     * the N most significant concepts.
+     * Creates a copy of the corpus and,depending on the accuracy of the output you
+     * want to get from the Concept Similarity calculation, this method set a limit
+     * to the number of concept to analise for every document inside the corpus,
+     * taking into account only the N most significant concepts.
      *
-     * @param n is the number of concepts taken into consideration.
+     * @param n is the number of concepts taken into consideration
+     * @return the new limited corpus
      */
-    public void setLimitConcepts(int n) {
+    //TODO: la copia non funziona..perchè il corpusObj ha le reference al corpus
+    //TODO: non prendere in considerazione articoli senza contenuti
+    public Vector<CorpusObj>  setLimitConcepts(int n) {
+
         for (CorpusObj co : corpus) {
             Vector<Concept> concepts = co.getConcepts();
+            Vector<Concept> newConcepts = new Vector<>();
+
             concepts.sort(Comparator.comparingDouble(Concept::getWeigth));
             Collections.reverse(concepts);
-            concepts.setSize(n);
+
+            int i = 0;
+            int iter = 0;
+            while(i < n && iter < concepts.size()){
+                if(concepts.get(i).getSysid().endsWith("n")){
+                    newConcepts.add(concepts.get(i));
+                    i++;
+                }
+                iter++;
+            }
+            co.setConcepts(newConcepts);
         }
+        return corpus;
+
     }
 
     /**

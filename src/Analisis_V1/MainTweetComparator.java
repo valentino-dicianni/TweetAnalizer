@@ -2,7 +2,6 @@ package Analisis_V1;
 
 import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.CorpusObj;
-import Analisis_V1.utils.Language;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -15,13 +14,13 @@ public class MainTweetComparator {
     private final static String tempPath = "corpus/press/temp/";
 
     /**
-     * Main method: compare the imput tweet with che corpus of documents and returns a
+     * Main method: compare the input tweet with che corpus of documents and returns a
      * vector vith the result scores.
      *
      * @param corpus the document corpus
      * @param tweet the tweet we are considering
      * @return the score vector with Concept Similarities between {@code tweet} and {@code corpus}
-     * @throws IOException from {@code TTCSInterface.launch()}
+     * @throws IOException from {@code CoverInterface.launch()}
      */
     private static Vector<Double> compare(Vector<CorpusObj> corpus, Vector<String> tweet) throws IOException {
         StringBuilder couple = new StringBuilder("{");
@@ -39,15 +38,15 @@ public class MainTweetComparator {
         res = res.substring(0, res.length() - 1);
         res += "}";
 
-        TTCSInterface.launch("vdicianni","Tavol15pork1" ,res);
-        //TTCSInterface.print();
+        CoverInterface.calculateConceptSimilarity(res);
+        //CoverInterface.print();
 
         //Compose results
         for(CorpusObj obj : corpus) {
             double sc = 0;
             for (String id : tweet) {
                 for (Concept t : obj.getConcepts()) {
-                    sc += (TTCSInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
+                    sc += (CoverInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
             }
             // Nomalize doc length
@@ -56,7 +55,7 @@ public class MainTweetComparator {
         }
 
         // Reset tfidfTable
-        TTCSInterface.resetTable();
+        CoverInterface.resetTable();
 
         return score;
 
@@ -71,14 +70,11 @@ public class MainTweetComparator {
         //todo: implementare tweet reader
         tweetIDs = tweetReader.getIDsFromTweet("la zanzara è un'insetto che provoca punture fastidiose" );
 
-        CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
+        //CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
+        CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
-        //CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
+        corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
 
-        //Optimization
-        corpusManager.setLimitConcepts(NUM_CONCEPTS);
-
-        corpus = corpusManager.getCorpus();
         System.out.println("\nRisultati ottenuti:\n");
         try {
             Vector<Double> res = compare(corpus, tweetIDs);
@@ -96,7 +92,5 @@ public class MainTweetComparator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }
