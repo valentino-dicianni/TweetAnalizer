@@ -1,16 +1,22 @@
 package Analisis_V1;
 
 import com.jcraft.jsch.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Vector;
+import java.util.stream.Collectors;
 
 
 public class CoverInterface {
     private static HashMap<String, Double> bids_to_ttcs_similarity = new HashMap<>();
+    private static HashMap<String, Integer> lostWordsPerSentence = new HashMap<>();
 
     private static String launch(String cmd) {
         String usr = "vdicianni";
@@ -26,7 +32,6 @@ public class CoverInterface {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
-
             Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(cmd);
             channel.connect();
@@ -37,7 +42,6 @@ public class CoverInterface {
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
-
             }
 
             reader.close();
@@ -51,10 +55,11 @@ public class CoverInterface {
         return sb != null ? sb.toString() : null;
     }
 
-    public static void getConceptNetVector(String words){
-        String cmd = "cd /home/vdicianni/conceptNet/; " + "java -jar jarTest.jar "+ words;
-        String json_vector = null;
+    public static Vector<Double> getConceptNetVector(String sentence){
+        String args = sentence.replaceAll(" ", ",");
 
+        String cmd = "cd /home/vdicianni/conceptNet/; " + "java -jar jarTest.jar "+ args;
+        String json_vector = null;
         String result = launch(cmd);
 
         assert result != null;
@@ -68,9 +73,51 @@ public class CoverInterface {
             }
         }
         scanner.close();
-        System.out.print(json_vector);
+        return calculateVectorMedia(json_vector, sentence);
     }
 
+    private static Vector<Double> calculateVectorMedia(String json_vector, String sentence){
+        Vector<Double> tempVector = new Vector<>();
+        Vector<Double> conceptNetVector = null;
+        int lostWords = 0;
+
+        try {
+            JSONArray jsonArray = new JSONArray(json_vector);
+
+            for(int i=0 ; i< jsonArray.length() - 1; i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                if(jsonObject.get("vector")  != JSONObject.NULL) {
+                    JSONArray cnVector = (JSONArray) jsonObject.get("vector");
+                    for(int j = 0; j < cnVector.length(); j++){
+                        if(tempVector.size() > j)
+                            tempVector.set(j, tempVector.get(j) + (double)cnVector.get(j));
+
+                        else tempVector.add(j, (double)cnVector.get(j));
+                    }
+                }
+                else{
+                    lostWords++;
+                }
+            }
+
+            //stats for lost words not in conceptNet
+            int finalLostWords = lostWords;
+            lostWordsPerSentence.put(sentence,lostWords);
+
+            //mapping vector media on jsonArray.length() - (lostWords + 1)
+            conceptNetVector = tempVector.stream()
+                    .map(n -> n/(jsonArray.length() - (finalLostWords + 1)))
+                    .collect(Collectors.toCollection(Vector::new));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        assert conceptNetVector != null;
+        return conceptNetVector;
+    }
 
     /**
      * Calculate the concept similarity between the couples in input and stores the
@@ -117,7 +164,11 @@ public class CoverInterface {
         return bids_to_ttcs_similarity.get(key);
     }
 
-    public static void resetTable(){
+    public static double getLostWords(String key){
+        return lostWordsPerSentence.get(key);
+    }
+
+    public static void resetSimTable(){
         bids_to_ttcs_similarity.clear();
     }
 

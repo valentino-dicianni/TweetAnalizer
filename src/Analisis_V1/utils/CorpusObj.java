@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class CorpusObj {
-    public String path;
+    public  String path;
     private String content;
     private Vector<Concept> concepts;
     private HashMap<String,Double> tfidfTable;
-    private  int numWords;
+    private Vector<Double> conceptNetVector;
+    private int numWords;
 
     public CorpusObj(String path, String content,Vector<Concept> concepts){
         this.content = content;
@@ -17,6 +18,7 @@ public class CorpusObj {
         this.numWords = calculateNumWords(content);
     }
 
+    //TODO: add json conceptNetVector
     public CorpusObj(String path, String content,Vector<Concept> concepts, int numWords){
         this.path = path;
         this.content = content;
@@ -49,6 +51,14 @@ public class CorpusObj {
         return content;
     }
 
+    public Vector<Double> getConceptNetVector() {
+        return conceptNetVector;
+    }
+
+    public void setConceptNetVector(Vector<Double> conceptNetVector) {
+        this.conceptNetVector = conceptNetVector;
+    }
+
     private int calculateNumWords(String content) {
         String[] words = content.replaceAll("[^a-zA-Z0-9]", " ").split("\\s+");
         return words.length;
@@ -78,6 +88,8 @@ public class CorpusObj {
     public String toString() {
         return ("Copus Object Path: " + path);
     }
+
+
 }
 
 

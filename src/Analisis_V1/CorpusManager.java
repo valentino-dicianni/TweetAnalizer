@@ -37,6 +37,7 @@ public class CorpusManager {
      *
      * @param jsonPath path to the json file
      */
+    //TODO: aggiungere al json anche il vettore conceptnet
     public CorpusManager(String jsonPath){
         this.corpus = new Vector<>();
         JSONArray jsonArray;
@@ -120,8 +121,13 @@ public class CorpusManager {
             System.out.println("Disambiguation executed...");
             executeTFIDF(TEMP_PATH);
             System.out.println("TF-IDF executed...");
-            for( CorpusObj co : corpus)
+
+            for(CorpusObj co : corpus){
                 co.assignWeigths();
+                co.setConceptNetVector(CoverInterface.getConceptNetVector(co.getContent()));
+            }
+            System.out.println("Weights assign and ConceptNet executed...");
+
         }
         outputJSONcorpus("");//TODO mettere a posto
     }
@@ -282,6 +288,7 @@ public class CorpusManager {
                 JSONObject tfidfTable = new JSONObject(co.getTfidfTable());
                 json.put("table", tfidfTable);
                 json.put("numWords", co.getNumWords());
+                json.put("conceptNetVector", co.getConceptNetVector());
 
             } catch (JSONException e) {
                 e.printStackTrace();

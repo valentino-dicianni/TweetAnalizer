@@ -3,7 +3,6 @@ package Analisis_V1;
 import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.CorpusObj;
 
-import java.io.IOException;
 import java.util.Vector;
 
 public class MainTweetComparator {
@@ -20,9 +19,8 @@ public class MainTweetComparator {
      * @param corpus the document corpus
      * @param tweet the tweet we are considering
      * @return the score vector with Concept Similarities between {@code tweet} and {@code corpus}
-     * @throws IOException from {@code CoverInterface.launch()}
      */
-    private static Vector<Double> compare(Vector<CorpusObj> corpus, Vector<String> tweet) throws IOException {
+    private static Vector<Double> compare(Vector<CorpusObj> corpus, Vector<String> tweet) {
         StringBuilder couple = new StringBuilder("{");
         Vector<Double> score = new Vector<>();
 
@@ -55,10 +53,13 @@ public class MainTweetComparator {
         }
 
         // Reset tfidfTable
-        CoverInterface.resetTable();
+        CoverInterface.resetSimTable();
 
         return score;
+    }
 
+    private static Vector<CorpusObj> cosineDistance (Vector<Double> twVector, Vector<CorpusObj> corpus ){
+        return null;
     }
 
     public static void main(String[] args) {
@@ -66,31 +67,30 @@ public class MainTweetComparator {
         Vector<String> tweetIDs;
         long start = System.currentTimeMillis();
 
+
+        //TODO: implementare tweet reader
         TweetReader tweetReader = new TweetReader();
-        //todo: implementare tweet reader
         tweetIDs = tweetReader.getIDsFromTweet("la zanzara è un'insetto che provoca punture fastidiose" );
 
         //CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
         CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
+
+
         corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
 
         System.out.println("\nRisultati ottenuti:\n");
-        try {
-            Vector<Double> res = compare(corpus, tweetIDs);
-            elapsedTimeMillis += System.currentTimeMillis() - start;
-            int best = 0;
-            for (int i = 0; i < res.size();  i++){
-                System.out.println(corpus.get(i) + "/ - Scored: " + res.elementAt(i));
-                if ( res.elementAt(i) > res.elementAt(best)) best = i;
-            }
-
-            System.out.println("\n##### Best Similarity in "+ elapsedTimeMillis / 1000+" second #####\n");
-            System.out.println(corpus.get(best).path);
-            System.out.println(corpus.get(best).getContent());
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        Vector<Double> res = compare(corpus, tweetIDs);
+        elapsedTimeMillis += System.currentTimeMillis() - start;
+        int best = 0;
+        for (int i = 0; i < res.size();  i++){
+            System.out.println(corpus.get(i) + "/ - Scored: " + res.elementAt(i));
+            if ( res.elementAt(i) > res.elementAt(best)) best = i;
         }
+
+        System.out.println("\n##### Best Similarity in "+ elapsedTimeMillis / 1000+" second #####\n");
+        System.out.println(corpus.get(best).path);
+        System.out.println(corpus.get(best).getContent());
+
     }
 }
