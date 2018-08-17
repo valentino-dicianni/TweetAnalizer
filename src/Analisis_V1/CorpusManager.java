@@ -74,6 +74,14 @@ public class CorpusManager {
             }
             System.out.println("Corpus creato con Succsso...\n");
 
+
+            //////////////////////////////
+            // TODO: DA MODIFICAREEEEE!
+            for(CorpusObj co : corpus){
+                co.setConceptNetVector(CoverInterface.getConceptNetVector(co.getContent()));
+            }
+            //////////////////////////////
+
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }

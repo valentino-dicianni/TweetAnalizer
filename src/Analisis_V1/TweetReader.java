@@ -2,6 +2,7 @@ package Analisis_V1;
 
 import Analisis_V1.utils.Concept;
 import Analisis_V1.utils.Language;
+import Analisis_V1.utils.Tweet;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -56,13 +57,20 @@ public class TweetReader {
     }
 
 
-    public Vector<String> getIDsFromTweet(String tweet){
+    private Vector<String> getIDsFromTweet(String tweet){
         Vector<Concept> concepts = bbfy.executePost(tweet);
         Vector<String> ids = new Vector<>();
         for(Concept t : concepts){
             ids.add(t.getSysid());
         }
         return ids;
+    }
+
+
+
+    //TODO rimuovere str e usare il parse file
+    public Tweet readTweet(String str){
+        return new Tweet(str, getIDsFromTweet(str), CoverInterface.getConceptNetVector(str));
     }
 
 }
