@@ -56,7 +56,9 @@ public class CoverInterface {
     }
 
     public static Vector<Double> getConceptNetVector(String sentence){
-        String args = sentence.replaceAll(" ", ",");
+        String args = sentence.replaceAll("  ", " ")
+                .replaceAll("[^a-zA-Z0-9òàèùì]+"," ")
+                .replaceAll(" ", ",");
 
         String cmd = "cd /home/vdicianni/conceptNet/; " + "java -jar jarTest.jar "+ args;
         String json_vector = null;

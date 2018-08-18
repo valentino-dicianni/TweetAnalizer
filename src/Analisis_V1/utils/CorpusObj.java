@@ -18,12 +18,12 @@ public class CorpusObj {
         this.numWords = calculateNumWords(content);
     }
 
-    //TODO: add json conceptNetVector
-    public CorpusObj(String path, String content,Vector<Concept> concepts, int numWords){
+    public CorpusObj(String path, String content,Vector<Concept> concepts, int numWords, Vector<Double> conceptNetVector){
         this.path = path;
         this.content = content;
         this.concepts = concepts;
         this.numWords = numWords;
+        this.conceptNetVector = conceptNetVector;
         this.tfidfTable = null;
     }
 
@@ -88,8 +88,6 @@ public class CorpusObj {
     public String toString() {
         return ("Copus Object Path: " + path);
     }
-
-
 }
 
 

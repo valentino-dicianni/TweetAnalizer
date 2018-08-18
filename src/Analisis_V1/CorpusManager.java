@@ -37,7 +37,6 @@ public class CorpusManager {
      *
      * @param jsonPath path to the json file
      */
-    //TODO: aggiungere al json anche il vettore conceptnet
     public CorpusManager(String jsonPath){
         this.corpus = new Vector<>();
         JSONArray jsonArray;
@@ -55,10 +54,16 @@ public class CorpusManager {
             jsonArray = new JSONArray(str);
 
             for(int i=0 ; i< jsonArray.length(); i++){
+                Vector<Double> conceptNetVector = new Vector<>();
                 Vector<Concept> vectorConcepts = new Vector<>();
 
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONArray conceptsArray = (JSONArray)jsonObject.get("concepts");
+                JSONArray conceptNetArray = (JSONArray)jsonObject.get("conceptNetVector");
+
+                for(int j=0 ; j< conceptNetArray.length(); j++){
+                    conceptNetVector.add(conceptNetArray.getDouble(j));
+                }
 
                 for(int j=0 ; j< conceptsArray.length(); j++){
                     String term = (String) conceptsArray.getJSONObject(j).get("string");
@@ -69,18 +74,11 @@ public class CorpusManager {
                     if(!vectorConcepts.contains(concept))
                         vectorConcepts.add(concept);
                 }
-                CorpusObj co = new CorpusObj(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"));
+                CorpusObj co = new CorpusObj(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"),  conceptNetVector);
                 corpus.add(co);
             }
-            System.out.println("Corpus creato con Succsso...\n");
+            System.out.println("Corpus created successfully...\n");
 
-
-            //////////////////////////////
-            // TODO: DA MODIFICAREEEEE!
-            for(CorpusObj co : corpus){
-                co.setConceptNetVector(CoverInterface.getConceptNetVector(co.getContent()));
-            }
-            //////////////////////////////
 
         } catch (JSONException | IOException e) {
             e.printStackTrace();
@@ -261,14 +259,14 @@ public class CorpusManager {
             concepts.sort(Comparator.comparingDouble(Concept::getWeigth));
             Collections.reverse(concepts);
 
+            int found = 0;
             int i = 0;
-            int iter = 0;
-            while(i < n && iter < concepts.size()){
+            while(found < n && i < concepts.size()){
                 if(concepts.get(i).getSysid().endsWith("n")){
                     newConcepts.add(concepts.get(i));
-                    i++;
+                    found++;
                 }
-                iter++;
+                i++;
             }
             co.setConcepts(newConcepts);
         }

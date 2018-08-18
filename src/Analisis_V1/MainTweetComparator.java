@@ -9,8 +9,8 @@ import java.util.*;
 public class MainTweetComparator {
 
     private static long elapsedTimeMillis;
-    private final static int NUM_CONCEPTS = 10;
-    private final static int PRESS_ACCOURACY = 10;
+    private final static int NUM_CONCEPTS = 4;
+    private final static int PRESS_ACCOURACY = 30;
     private final static String corpusPath = "corpus/press/";
     private final static String tempPath = "corpus/press/temp/";
 
@@ -68,7 +68,7 @@ public class MainTweetComparator {
      * @return
      */
 
-    public static Vector<CorpusObj> cosineDistance (Vector<Double> tweetVector, Vector<CorpusObj> corpus, int accouracy ){
+    private static Vector<CorpusObj> cosineDistance(Vector<Double> tweetVector, Vector<CorpusObj> corpus){
         double dotProduct = 0.0;
         double normA = 0.0;
         double normB = 0.0;
@@ -86,14 +86,13 @@ public class MainTweetComparator {
             tempMap.put(co, score);
 
         }
-        if(accouracy < corpus.size()){
-            return sortByValue(tempMap, accouracy);
+        if(PRESS_ACCOURACY < corpus.size()){
+            return sortByValue(tempMap);
         }
         else return null;
     }
 
-    public static Vector<CorpusObj> sortByValue(Map<CorpusObj, Double> unsortMap, int accouracy) {
-
+    private static Vector<CorpusObj> sortByValue(Map<CorpusObj, Double> unsortMap) {
         // 1. Convert Map to List of Map
         List<Map.Entry<CorpusObj, Double>> list = new LinkedList<>(unsortMap.entrySet());
 
@@ -103,12 +102,16 @@ public class MainTweetComparator {
         // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
         Vector<CorpusObj> res = new Vector<>();
 
-
+        int i = 0;
         for (Map.Entry<CorpusObj, Double> entry : list) {
-            res.add(entry.getKey());
+            if(i < PRESS_ACCOURACY) {
+                res.add(entry.getKey());
+                i++;
+            }
+            else break;
         }
 
-        return (Vector<CorpusObj>) res.subList(0, accouracy);
+        return res;
     }
 
 
@@ -119,28 +122,33 @@ public class MainTweetComparator {
 
         //TODO: implementare tweet reader
         TweetReader tweetReader = new TweetReader();
-        Tweet tweet = tweetReader.readTweet("prova tweet");
+        Tweet tweet = tweetReader.readTweet("il restauro delle facciate della reggia di portici è incredibile. intonaci e stucchi meravigliosi");
 
         //CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
         CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
+
         corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
+        Vector<CorpusObj> c2 = cosineDistance(tweet.getConceptNetVector(), corpus);
 
-        Vector<CorpusObj> c2 = cosineDistance(tweet.getConceptNetVector(), corpus, PRESS_ACCOURACY);
 
+        System.out.println("## Results: ##\n");
+        Vector<Double> res = compare(c2, tweet.getConceptsID());
 
-        System.out.println("\nRisultati ottenuti:\n");
-        Vector<Double> res = compare(corpus, tweet.getConceptsID());
         elapsedTimeMillis += System.currentTimeMillis() - start;
         int best = 0;
         for (int i = 0; i < res.size();  i++){
-            System.out.println(corpus.get(i) + "/ - Scored: " + res.elementAt(i));
+            System.out.println("\n"+c2.get(i) + "/ - Scored: " + res.elementAt(i));
+            System.out.println("  -> "+c2.get(i).getConcepts());
+            System.out.println("---------------");
             if ( res.elementAt(i) > res.elementAt(best)) best = i;
         }
 
         System.out.println("\n##### Best Similarity in "+ elapsedTimeMillis / 1000+" second #####\n");
-        System.out.println(corpus.get(best).path);
-        System.out.println(corpus.get(best).getContent());
+        System.out.println(c2.get(best).path);
+        System.out.println(c2.get(best).getContent());
+
+
 
     }
 }
