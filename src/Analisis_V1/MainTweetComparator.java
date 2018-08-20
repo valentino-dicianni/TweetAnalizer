@@ -60,14 +60,14 @@ public class MainTweetComparator {
         return score;
     }
 
-
     /***
+     * Calculate the cosine distance between the Tweet's conceptNet vector, and every
+     * ConceptNet vector in the corpus.
      *
-     * @param tweetVector
-     * @param corpus
-     * @return
+     * @param tweetVector Tweet's conceptNet vector
+     * @param corpus corpus vector
+     * @return the sorted corpus by cosine distance score.
      */
-
     private static Vector<CorpusObj> cosineDistance(Vector<Double> tweetVector, Vector<CorpusObj> corpus){
         double dotProduct = 0.0;
         double normA = 0.0;
@@ -89,17 +89,17 @@ public class MainTweetComparator {
         if(PRESS_ACCOURACY < corpus.size()){
             return sortByValue(tempMap);
         }
-        else return null;
+        else try {
+            throw new Exception("Press accuracy grater than corpus size...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static Vector<CorpusObj> sortByValue(Map<CorpusObj, Double> unsortMap) {
-        // 1. Convert Map to List of Map
         List<Map.Entry<CorpusObj, Double>> list = new LinkedList<>(unsortMap.entrySet());
-
-        // 2. Sort list with Collections.sort(), provide a custom Comparator
         list.sort(Comparator.comparing(o -> (o.getValue())));
-
-        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
         Vector<CorpusObj> res = new Vector<>();
 
         int i = 0;
@@ -110,9 +110,9 @@ public class MainTweetComparator {
             }
             else break;
         }
-
         return res;
     }
+
 
 
     public static void main(String[] args) {
@@ -122,7 +122,7 @@ public class MainTweetComparator {
 
         //TODO: implementare tweet reader
         TweetReader tweetReader = new TweetReader();
-        Tweet tweet = tweetReader.readTweet("il restauro delle facciate della reggia di portici è incredibile. intonaci e stucchi meravigliosi");
+        Tweet tweet = tweetReader.readTweet("confcommercio dice che i saldi in toscana porteranno grande fatturato ai negozi");
 
         //CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
         CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
@@ -149,6 +149,11 @@ public class MainTweetComparator {
         System.out.println(c2.get(best).getContent());
 
 
+        /*
+          si potrebbe implementare un sistema iterativo, che va a verificare lo score di ogni iterazione, toglie i risultati che hanno ottenuto 0
+          e a seconda della classifica ottenuta tramite conceptNet, aggiunge articoli per ottenere il numero di articoli richiesti
+          con nessuno che abbia punteggio 0
+         */
 
     }
 }

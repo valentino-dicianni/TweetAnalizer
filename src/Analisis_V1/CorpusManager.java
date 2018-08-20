@@ -163,7 +163,7 @@ public class CorpusManager {
     private void createTempCorpus(String name, CorpusObj obj){
         PrintWriter writer;
         try {
-            String text = obj.termsToString();
+            String text = obj.conceptToString();
             writer = new PrintWriter(TEMP_PATH + name, "UTF-8");
             writer.println(text);
             writer.close();
@@ -249,7 +249,6 @@ public class CorpusManager {
      * @return the new limited corpus
      */
     //TODO: la copia non funziona..perchè il corpusObj ha le reference al corpus
-    //TODO: non prendere in considerazione articoli senza contenuti
     public Vector<CorpusObj>  setLimitConcepts(int n) {
 
         for (CorpusObj co : corpus) {

@@ -3,13 +3,26 @@ package Analisis_V1.utils;
 import java.util.HashMap;
 import java.util.Vector;
 
+/***
+ * This class represent a Corpus Document.
+ * Every document in the corpus get this kind of representation. A {@code CorpusObj} is
+ * a java object with:
+ *
+ * {@code path} : Document path
+ * {@code content} : Document text content
+ * {@code numWords} : Number of document's words
+ * {@code concepts} : List of concepts disambiguated with Babelfy
+ * {@code tfidfTable} : The TFIDF table for this document. Every word in the content gets a value
+ * {@code conceptNetVector} : Media vector of word's vector calculated with ConceptNet
+ */
+
 public class CorpusObj {
     public  String path;
     private String content;
+    private int numWords;
     private Vector<Concept> concepts;
     private HashMap<String,Double> tfidfTable;
     private Vector<Double> conceptNetVector;
-    private int numWords;
 
     public CorpusObj(String path, String content,Vector<Concept> concepts){
         this.content = content;
@@ -64,7 +77,7 @@ public class CorpusObj {
         return words.length;
     }
 
-    public String termsToString(){
+    public String conceptToString(){
         StringBuilder result = new StringBuilder();
         for (Concept concept: concepts) {
             result.append(concept.getString());

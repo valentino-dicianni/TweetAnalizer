@@ -43,8 +43,8 @@ public class BFYidGetter {
         String urlParameters   = "text="+text+"&lang="+lang.toString()+"&key="+key;
         byte[] postData        = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int    postDataLength  = postData.length;
-        HttpURLConnection conn = null;
         Vector<Concept> result = new Vector<>();
+        HttpURLConnection conn;
 
         try {
 
@@ -84,7 +84,7 @@ public class BFYidGetter {
      * @throws IOException if connection doesn't work
      */
     private HttpURLConnection connectToServer() throws IOException {
-        HttpURLConnection conn = null;
+        HttpURLConnection conn;
         URL url = new URL(service_url);
         conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
@@ -104,7 +104,7 @@ public class BFYidGetter {
      * @param res is the results vector
      */
     private void analizeJson(String text, String response, Vector<Concept> res){
-        JSONArray jsonArray = null;
+        JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(response);
 
