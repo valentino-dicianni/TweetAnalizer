@@ -33,8 +33,10 @@ public class TweetReader {
                if(line.contains("text:")){
                    String[] splitStr =  line.split("text: ");
                    tweets.add(splitStr[1]);
-                   lastLine = splitStr[1];
-                   noRepeatTweet.add(lastLine);
+                   String[] a = splitStr[1].split("https//");
+                   lastLine = a[0];
+                   if (!lastLine.contains("…") && !lastLine.contains("RT "))
+                       noRepeatTweet.add(lastLine);
                }
                else{
                    String oldStr = tweets.get(tweets.indexOf(lastLine));
@@ -70,7 +72,7 @@ public class TweetReader {
 
     //TODO rimuovere str e usare il parse file
     public Tweet readTweet(String str){
-        return new Tweet(str, getIDsFromTweet(str), CoverInterface.getConceptNetVector(str));
+        return new Tweet(str, getIDsFromTweet(str), CoverInterface.getConceptNetVector("",str));
     }
 
 }

@@ -13,7 +13,7 @@ public class CorpusManager {
     private  String TEMP_PATH;
     private  BFYidGetter bbfy;
     private  TFIDFCalculation tfidfCalculation;
-    private  Vector<CorpusObj> corpus;
+    private  Vector<CorpusObject> corpus;
 
     /**
      * CorpusManager constructor for creating a new corpus from scratch, using
@@ -29,7 +29,7 @@ public class CorpusManager {
         this.bbfy = new BFYidGetter(lang);
         this.tfidfCalculation = new TFIDFCalculation();
         this.corpus = new Vector<>();
-        createCorpus();
+        createCorpus(corpusPath);
     }
 
     /**
@@ -74,7 +74,7 @@ public class CorpusManager {
                     if(!vectorConcepts.contains(concept))
                         vectorConcepts.add(concept);
                 }
-                CorpusObj co = new CorpusObj(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"),  conceptNetVector);
+                CorpusObject co = new CorpusObject(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"),  conceptNetVector);
                 corpus.add(co);
             }
             System.out.println("Corpus created successfully...\n");
@@ -85,7 +85,7 @@ public class CorpusManager {
         }
     }
 
-    public Vector<CorpusObj> getCorpus() {
+    public Vector<CorpusObject> getCorpus() {
         return corpus;
     }
 
@@ -96,10 +96,10 @@ public class CorpusManager {
      * 1) read files and replace all unsupported characters.
      * 2) execute the disambiguation
      * 3) execute the TF-IDF calculation
-     * 4) assign weights to che CorpusObj
+     * 4) assign weights to che CorpusObject
      * 5) create a JSON file for future execution on the same corpus
      */
-    private void createCorpus() {
+    private void createCorpus(String path) {
         File folder = new File(CORPUS_PATH);
         File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
         System.out.println("Begin Corpus creation...");
@@ -117,7 +117,7 @@ public class CorpusManager {
                     }
 
                     String text = sb.toString().replaceAll("[^a-zA-Z0-9òàèù.,']+"," ");
-                    CorpusObj tmpObj = disambiguation(text, file.getPath());
+                    CorpusObject tmpObj = disambiguation(text, file.getPath());
                     createTempCorpus(file.getName(), tmpObj);
 
                 } catch (IOException e) {
@@ -128,26 +128,27 @@ public class CorpusManager {
             executeTFIDF(TEMP_PATH);
             System.out.println("TF-IDF executed...");
 
-            for(CorpusObj co : corpus){
+            for(CorpusObject co : corpus){
                 co.assignWeigths();
-                co.setConceptNetVector(CoverInterface.getConceptNetVector(co.getContent()));
+                co.setConceptNetVector(CoverInterface.getConceptNetVector(co.path, co.getContent()));
+                co.setNumLostWords(CoverInterface.getLostWordScore(co.path));
             }
             System.out.println("Weights assign and ConceptNet executed...");
 
         }
-        outputJSONcorpus("");//TODO mettere a posto
+        outputJSONcorpus("_"+path.replace("corpus/", "").replace("/",""));
     }
 
     /**
      * Execute the call to {@code bbfy.executePost()} passing a string.
-     * Create a new {@code CorpusObj} add adds it to the corpus.
+     * Create a new {@code CorpusObject} add adds it to the corpus.
      *
      * @param str the string to disambiguate
      * @param path the file path
      * @return returns the new CopusObj created
      */
-    private CorpusObj disambiguation(String str, String path){
-        CorpusObj corpusObj = new CorpusObj(path, str, bbfy.executePost(str));
+    private CorpusObject disambiguation(String str, String path){
+        CorpusObject corpusObj = new CorpusObject(path, str, bbfy.executePost(str));
         corpus.add(corpusObj);
         return corpusObj;
     }
@@ -158,9 +159,9 @@ public class CorpusManager {
      * This temp corpus is useful for calculating the TF-IDF.
      *
      * @param name is the temporary file name
-     * @param obj is the the reference to a {@code CorpusObj}
+     * @param obj is the the reference to a {@code CorpusObject}
      */
-    private void createTempCorpus(String name, CorpusObj obj){
+    private void createTempCorpus(String name, CorpusObject obj){
         PrintWriter writer;
         try {
             String text = obj.conceptToString();
@@ -177,7 +178,7 @@ public class CorpusManager {
      * Fetch the list of text files found on the {@code path} and execute the
      * TF-IDF algorithm. The first part calculate the Term Frequency of every document,
      * then the Inverse Doc Frequency is stored into the {@code inverseDocFreqMap} hashMap.
-     * After that, every {@code CorpusObj} is assign with a TF-IDF table.
+     * After that, every {@code CorpusObject} is assign with a TF-IDF table.
      *
      * @param path the corpus path.
      */
@@ -228,8 +229,8 @@ public class CorpusManager {
                     count++;
                 }
 
-                // Add TFIDF tfidfTable to every CorpusObj
-                for (CorpusObj obj : corpus){
+                // Add TFIDF tfidfTable to every CorpusObject
+                for (CorpusObject obj : corpus){
                     if(obj.path.equals(CORPUS_PATH+file.getName())){
                         obj.setTfidfTable(tfIDFTable);
                     }
@@ -249,9 +250,9 @@ public class CorpusManager {
      * @return the new limited corpus
      */
     //TODO: la copia non funziona..perchè il corpusObj ha le reference al corpus
-    public Vector<CorpusObj>  setLimitConcepts(int n) {
+    public Vector<CorpusObject>  setLimitConcepts(int n) {
 
-        for (CorpusObj co : corpus) {
+        for (CorpusObject co : corpus) {
             Vector<Concept> concepts = co.getConcepts();
             Vector<Concept> newConcepts = new Vector<>();
 
@@ -284,7 +285,7 @@ public class CorpusManager {
     public void outputJSONcorpus(String path){
         JSONArray jsonArray = new JSONArray();
 
-        for (CorpusObj co : corpus) {
+        for (CorpusObject co : corpus) {
             JSONObject json = new JSONObject();
             try {
                 json.put("path", co.path);
@@ -309,5 +310,23 @@ public class CorpusManager {
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void printLostWords(){
+        String eol = System.getProperty("line.separator");
+
+        try (Writer writer = new FileWriter("log_lostWords.csv")) {
+            for (CorpusObject co : corpus) {
+                writer.append(co.path)
+                        .append(',')
+                        .append(String.valueOf(co.getNumLostWords()))
+                        .append(" su ")
+                        .append(String.valueOf(co.getNumWords()))
+                        .append(eol);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
+
     }
 }

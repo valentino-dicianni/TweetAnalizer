@@ -43,7 +43,7 @@ public class Concept {
 
     @Override
     public String toString() {
-        return term +" :: "+sysid + " @ "+ weigth ;
+        return term +" :: "+sysid +" @ "+ weigth ;
     }
 
 }

@@ -5,7 +5,7 @@ import java.util.Vector;
 
 /***
  * This class represent a Corpus Document.
- * Every document in the corpus get this kind of representation. A {@code CorpusObj} is
+ * Every document in the corpus get this kind of representation. A {@code CorpusObject} is
  * a java object with:
  *
  * {@code path} : Document path
@@ -16,22 +16,23 @@ import java.util.Vector;
  * {@code conceptNetVector} : Media vector of word's vector calculated with ConceptNet
  */
 
-public class CorpusObj {
+public class CorpusObject {
     public  String path;
     private String content;
     private int numWords;
+    private int numLostWords;
     private Vector<Concept> concepts;
     private HashMap<String,Double> tfidfTable;
     private Vector<Double> conceptNetVector;
 
-    public CorpusObj(String path, String content,Vector<Concept> concepts){
+    public CorpusObject(String path, String content, Vector<Concept> concepts){
         this.content = content;
         this.path = path;
         this.concepts = concepts;
         this.numWords = calculateNumWords(content);
     }
 
-    public CorpusObj(String path, String content,Vector<Concept> concepts, int numWords, Vector<Double> conceptNetVector){
+    public CorpusObject(String path, String content, Vector<Concept> concepts, int numWords, Vector<Double> conceptNetVector){
         this.path = path;
         this.content = content;
         this.concepts = concepts;
@@ -42,6 +43,14 @@ public class CorpusObj {
 
     public int getNumWords() {
         return numWords;
+    }
+
+    public void setNumLostWords(int numLostWords) {
+        this.numLostWords = numLostWords;
+    }
+
+    public int getNumLostWords() {
+        return numLostWords;
     }
 
     public void setTfidfTable(HashMap<String, Double> tfidfTable) {

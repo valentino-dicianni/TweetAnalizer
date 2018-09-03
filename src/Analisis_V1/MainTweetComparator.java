@@ -1,7 +1,8 @@
 package Analisis_V1;
 
 import Analisis_V1.utils.Concept;
-import Analisis_V1.utils.CorpusObj;
+import Analisis_V1.utils.CorpusObject;
+import Analisis_V1.utils.Language;
 import Analisis_V1.utils.Tweet;
 
 import java.util.*;
@@ -10,9 +11,9 @@ public class MainTweetComparator {
 
     private static long elapsedTimeMillis;
     private final static int NUM_CONCEPTS = 4;
-    private final static int PRESS_ACCOURACY = 30;
-    private final static String corpusPath = "corpus/press/";
-    private final static String tempPath = "corpus/press/temp/";
+    private final static int PRESS_ACCOURACY = 40;
+    private final static String corpusPath = "corpus/vaccini_press/";
+    private final static String tempPath = "corpus/vaccini_press/temp/";
 
     /**
      * Main method: compare the input tweet with che corpus of documents and returns a
@@ -22,11 +23,11 @@ public class MainTweetComparator {
      * @param tweet the tweet we are considering
      * @return the score vector with Concept Similarities between {@code tweet} and {@code corpus}
      */
-    private static Vector<Double> compare(Vector<CorpusObj> corpus, Vector<String> tweet) {
+    private static Vector<Double> compare(Vector<CorpusObject> corpus, Vector<String> tweet) {
         StringBuilder couple = new StringBuilder("{");
         Vector<Double> score = new Vector<>();
 
-        for(CorpusObj obj : corpus) {
+        for(CorpusObject obj : corpus) {
             for (String id : tweet) {
                 for (Concept t : obj.getConcepts()) {
                     couple.append("[").append(id).append(",").append(t.getSysid()).append("]");
@@ -42,11 +43,11 @@ public class MainTweetComparator {
         //CoverInterface.print();
 
         //Compose results
-        for(CorpusObj obj : corpus) {
+        for(CorpusObject obj : corpus) {
             double sc = 0;
             for (String id : tweet) {
                 for (Concept t : obj.getConcepts()) {
-                    sc += (CoverInterface.getScore(id + "_" + t.getSysid()) * t.getWeigth());
+                    sc += (CoverInterface.getSimilarityScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
             }
             // Nomalize doc length
@@ -68,14 +69,14 @@ public class MainTweetComparator {
      * @param corpus corpus vector
      * @return the sorted corpus by cosine distance score.
      */
-    private static Vector<CorpusObj> cosineDistance(Vector<Double> tweetVector, Vector<CorpusObj> corpus){
+    private static Vector<CorpusObject> cosineDistance(Vector<Double> tweetVector, Vector<CorpusObject> corpus){
         double dotProduct = 0.0;
         double normA = 0.0;
         double normB = 0.0;
 
-        HashMap<CorpusObj, Double> tempMap = new HashMap<>();
+        HashMap<CorpusObject, Double> tempMap = new HashMap<>();
 
-        for(CorpusObj co : corpus){
+        for(CorpusObject co : corpus){
             for (int i = 0; i < tweetVector.size(); i++) {
                 dotProduct += tweetVector.get(i) * co.getConceptNetVector().get(i);
                 normA += Math.pow(tweetVector.get(i), 2);
@@ -86,25 +87,21 @@ public class MainTweetComparator {
             tempMap.put(co, score);
 
         }
-        if(PRESS_ACCOURACY < corpus.size()){
-            return sortByValue(tempMap);
-        }
-        else try {
-            throw new Exception("Press accuracy grater than corpus size...");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        if(corpus.size() < PRESS_ACCOURACY)
+            return sortByValue(tempMap, corpus.size());
+        else
+            return sortByValue(tempMap,PRESS_ACCOURACY);
+
     }
 
-    private static Vector<CorpusObj> sortByValue(Map<CorpusObj, Double> unsortMap) {
-        List<Map.Entry<CorpusObj, Double>> list = new LinkedList<>(unsortMap.entrySet());
+    private static Vector<CorpusObject> sortByValue(Map<CorpusObject, Double> unsortMap, int accouracy) {
+        List<Map.Entry<CorpusObject, Double>> list = new LinkedList<>(unsortMap.entrySet());
         list.sort(Comparator.comparing(o -> (o.getValue())));
-        Vector<CorpusObj> res = new Vector<>();
+        Vector<CorpusObject> res = new Vector<>();
 
         int i = 0;
-        for (Map.Entry<CorpusObj, Double> entry : list) {
-            if(i < PRESS_ACCOURACY) {
+        for (Map.Entry<CorpusObject, Double> entry : list) {
+            if(i < accouracy ) {
                 res.add(entry.getKey());
                 i++;
             }
@@ -116,20 +113,22 @@ public class MainTweetComparator {
 
 
     public static void main(String[] args) {
-        Vector<CorpusObj> corpus;
+        Vector<CorpusObject> corpus;
         long start = System.currentTimeMillis();
 
 
         //TODO: implementare tweet reader
         TweetReader tweetReader = new TweetReader();
-        Tweet tweet = tweetReader.readTweet("confcommercio dice che i saldi in toscana porteranno grande fatturato ai negozi");
+        //Tweet tweet = tweetReader.readTweet("confcommercio dice che i saldi in toscana porteranno grande fatturato ai negozi");
+        Tweet tweet = tweetReader.readTweet("A questo punto, per coerenza, invece di cacciare o schedare neri e rom Salvini dovrebbe vaccinarli");
 
-        //CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
-        CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
+        CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
+        //CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus.json");
 
+        corpusManager.printLostWords();
 
         corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
-        Vector<CorpusObj> c2 = cosineDistance(tweet.getConceptNetVector(), corpus);
+        Vector<CorpusObject> c2 = cosineDistance(tweet.getConceptNetVector(), corpus);
 
 
         System.out.println("## Results: ##\n");
@@ -147,13 +146,5 @@ public class MainTweetComparator {
         System.out.println("\n##### Best Similarity in "+ elapsedTimeMillis / 1000+" second #####\n");
         System.out.println(c2.get(best).path);
         System.out.println(c2.get(best).getContent());
-
-
-        /*
-          si potrebbe implementare un sistema iterativo, che va a verificare lo score di ogni iterazione, toglie i risultati che hanno ottenuto 0
-          e a seconda della classifica ottenuta tramite conceptNet, aggiunge articoli per ottenere il numero di articoli richiesti
-          con nessuno che abbia punteggio 0
-         */
-
     }
 }

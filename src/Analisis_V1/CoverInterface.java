@@ -55,7 +55,7 @@ public class CoverInterface {
         return sb != null ? sb.toString() : null;
     }
 
-    public static Vector<Double> getConceptNetVector(String sentence){
+    public static Vector<Double> getConceptNetVector(String path, String sentence){
         String args = sentence.replaceAll("  ", " ")
                 .replaceAll("[^a-zA-Z0-9òàèùì]+"," ")
                 .replaceAll(" ", ",");
@@ -75,10 +75,10 @@ public class CoverInterface {
             }
         }
         scanner.close();
-        return calculateVectorMedia(json_vector, sentence);
+        return calculateVectorMedia(path, json_vector);
     }
 
-    private static Vector<Double> calculateVectorMedia(String json_vector, String sentence){
+    private static Vector<Double> calculateVectorMedia(String path, String json_vector){
         Vector<Double> tempVector = new Vector<>();
         Vector<Double> conceptNetVector = null;
         int lostWords = 0;
@@ -105,7 +105,7 @@ public class CoverInterface {
 
             //stats for lost words not in conceptNet
             int finalLostWords = lostWords;
-            lostWordsPerSentence.put(sentence,lostWords);
+            lostWordsPerSentence.put(path,lostWords);
 
             //mapping vector media on jsonArray.length() - (lostWords + 1)
             conceptNetVector = tempVector.stream()
@@ -162,11 +162,11 @@ public class CoverInterface {
 
     }
 
-    public static double getScore(String key){
+    public static double getSimilarityScore(String key){
         return bids_to_ttcs_similarity.get(key);
     }
 
-    public static double getLostWords(String key){
+    public static int getLostWordScore(String key){
         return lostWordsPerSentence.get(key);
     }
 
