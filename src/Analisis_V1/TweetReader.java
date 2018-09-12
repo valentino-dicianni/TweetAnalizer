@@ -13,7 +13,7 @@ import java.util.Vector;
 public class TweetReader {
     private ArrayList<String> tweets = new ArrayList<>();
     private HashSet<String> noRepeatTweet = new HashSet<>();
-    private BFYidGetter bbfy = new BFYidGetter(Language.IT);
+    private BabelNetIDsUtility bbfy = new BabelNetIDsUtility(Language.IT);
 
 
     /**
@@ -63,7 +63,8 @@ public class TweetReader {
         Vector<Concept> concepts = bbfy.executePost(tweet);
         Vector<String> ids = new Vector<>();
         for(Concept t : concepts){
-            ids.add(t.getSysid());
+            if(t.getSysid().endsWith("n"))
+                ids.add(t.getSysid());
         }
         return ids;
     }

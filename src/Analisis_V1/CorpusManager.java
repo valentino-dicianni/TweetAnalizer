@@ -11,7 +11,7 @@ import java.util.*;
 public class CorpusManager {
     private  String CORPUS_PATH;
     private  String TEMP_PATH;
-    private  BFYidGetter bbfy;
+    private BabelNetIDsUtility bbfy;
     private  TFIDFCalculation tfidfCalculation;
     private  Vector<CorpusObject> corpus;
 
@@ -26,7 +26,7 @@ public class CorpusManager {
     public CorpusManager(String corpusPath, String tempPath, Language lang){
         this.CORPUS_PATH = corpusPath;
         this.TEMP_PATH = tempPath;
-        this.bbfy = new BFYidGetter(lang);
+        this.bbfy = new BabelNetIDsUtility(lang);
         this.tfidfCalculation = new TFIDFCalculation();
         this.corpus = new Vector<>();
         createCorpus(corpusPath);
@@ -208,7 +208,7 @@ public class CorpusManager {
             //Calculatin InverseDocFrequency
             HashMap<String,Double> inverseDocFreqMap = tfidfCalculation.calculateInverseDocFrequency(docProperties);
 
-            //Calculating TFc-IDF
+            //Calculating TF-IDF
             count = 0;
             for (File file : listOfFiles) {
                 HashMap<String,Double> tfIDFTable = new HashMap<>();

@@ -15,12 +15,12 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 
-public class BFYidGetter {
+public class BabelNetIDsUtility {
     private String key = "441df9e4-7a0a-4d36-ad66-d38294c1dcd4";
     private String service_url = "https://babelfy.io/v1/disambiguate";
     private Language lang;
 
-    public BFYidGetter(Language lang){
+    public BabelNetIDsUtility(Language lang){
         this.lang = lang;
     }
 
