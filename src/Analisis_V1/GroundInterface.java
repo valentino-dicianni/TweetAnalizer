@@ -14,7 +14,7 @@ import java.util.Vector;
 import java.util.stream.Collectors;
 
 
-public class CoverInterface {
+public class GroundInterface {
     private static HashMap<String, Double> bids_to_ttcs_similarity = new HashMap<>();
     private static HashMap<String, Integer> lostWordsPerSentence = new HashMap<>();
 

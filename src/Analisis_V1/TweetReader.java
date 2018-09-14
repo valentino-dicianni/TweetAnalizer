@@ -73,7 +73,7 @@ public class TweetReader {
 
     //TODO rimuovere str e usare il parse file
     public Tweet readTweet(String str){
-        return new Tweet(str, getIDsFromTweet(str), CoverInterface.getConceptNetVector("",str));
+        return new Tweet(str, getIDsFromTweet(str), GroundInterface.getConceptNetVector("",str));
     }
 
 }

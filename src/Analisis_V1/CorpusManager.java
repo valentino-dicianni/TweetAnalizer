@@ -130,8 +130,8 @@ public class CorpusManager {
 
             for(CorpusObject co : corpus){
                 co.assignWeigths();
-                co.setConceptNetVector(CoverInterface.getConceptNetVector(co.path, co.getContent()));
-                co.setNumLostWords(CoverInterface.getLostWordScore(co.path));
+                co.setConceptNetVector(GroundInterface.getConceptNetVector(co.path, co.getContent()));
+                co.setNumLostWords(GroundInterface.getLostWordScore(co.path));
             }
             System.out.println("Weights assign and ConceptNet executed...");
 

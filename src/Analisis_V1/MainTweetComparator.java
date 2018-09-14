@@ -39,22 +39,22 @@ public class MainTweetComparator {
         res = res.substring(0, res.length() - 1);
         res += "}";
 
-        CoverInterface.calculateConceptSimilarity(res);
-        //CoverInterface.print();
+        GroundInterface.calculateConceptSimilarity(res);
+        //GroundInterface.print();
 
         //Compose results
         for(CorpusObject obj : corpus) {
             double sc = 0;
             for (String id : tweet) {
                 for (Concept t : obj.getConcepts()) {
-                    sc += (CoverInterface.getSimilarityScore(id + "_" + t.getSysid()) * t.getWeigth());
+                    sc += (GroundInterface.getSimilarityScore(id + "_" + t.getSysid()) * t.getWeigth());
                 }
             }
             score.add(new ResultObject(obj, sc));
         }
 
         // Reset tfidfTable
-        CoverInterface.resetSimTable();
+        GroundInterface.resetSimTable();
 
         return score;
     }
