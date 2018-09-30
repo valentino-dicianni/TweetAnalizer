@@ -3,16 +3,15 @@ package Analisis_V1.utils;
 import java.util.Vector;
 
 public class Tweet {
+    private String author;
     private String content;
     private Vector<String> conceptsID;
     private Vector<Double> conceptNetVector;
 
 
-    public Tweet(String str, Vector<String> ids, Vector<Double> netVector) {
-        this.content = str;
-        this.conceptsID = ids;
-        this.conceptNetVector = netVector;
-
+    public Tweet(String author, String content) {
+        this.author = author.replaceAll(" ", "");
+        this.content = content;
     }
 
 
@@ -38,5 +37,9 @@ public class Tweet {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 }

@@ -16,7 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 
 public class BabelNetIDsUtility {
-    private String key = "441df9e4-7a0a-4d36-ad66-d38294c1dcd4";
+    //private String key = "441df9e4-7a0a-4d36-ad66-d38294c1dcd4";
+    //private String key = "27ca9b69-a220-4173-be9d-ce8ff3826080";
+    private String key = "c4bc4acd-eb8b-4794-88b8-b230156e6fe6";
+
     private String service_url = "https://babelfy.io/v1/disambiguate";
     private Language lang;
 

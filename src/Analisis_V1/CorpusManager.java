@@ -77,7 +77,7 @@ public class CorpusManager {
                 CorpusObject co = new CorpusObject(jsonObject.getString("path"),jsonObject.getString("content"), vectorConcepts, (int)jsonObject.get("numWords"),  conceptNetVector);
                 corpus.add(co);
             }
-            System.out.println("Corpus created successfully...\n");
+            System.out.println("Corpus created successfully...");
 
 
         } catch (JSONException | IOException e) {

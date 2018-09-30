@@ -11,13 +11,47 @@ public class MainTweetComparator {
 
     private static long elapsedTimeMillis;
     private final static int NUM_CONCEPTS = 20;
-    private final static int PRESS_ACCOURACY = 20;
-    private final static String corpusPath = "corpus/press_80_20/";
-    private final static String tempPath = "corpus/press_80_20/temp/";
+    private final static int PRESS_ACCOURACY = 10;
+    private final static String corpusPath = "corpus/press_99_1/";
+
+
+    public static void main(String[] args) {
+        Vector<CorpusObject> corpus;
+
+        TweetReader tweetReader = new TweetReader("corpus/testTweets_99_1");
+
+        for(int i = 0; i < tweetReader.numTweets; i++) {
+            long start = System.currentTimeMillis();
+            System.out.println("### Starting analysis n°"+(i+1)+" ###");
+
+            Tweet tweet = tweetReader.readTweet();
+
+            //CorpusManager corpusManager = new CorpusManager(corpusPath+tweet.getAuthor()+"/", corpusPath+tweet.getAuthor()+"/temp/", Language.IT);
+            CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus_press_99_1"+tweet.getAuthor()+".json");
+
+            corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
+            Vector<CorpusObject> c2 = calculateCosineDistance(tweet.getConceptNetVector(), corpus);
+
+
+            System.out.println("Waiting for results...");
+            Vector<ResultObject> res = compare(c2, tweet.getConceptsID());
+
+            elapsedTimeMillis += System.currentTimeMillis() - start;
+            System.out.println("\n##### Best Similarity found in " + elapsedTimeMillis / 1000 + " second #####\n");
+
+            res.sort(Comparator.comparingDouble(ResultObject::getScore));
+
+            writeResults(res, "/Users/mac/IdeaProjects/Tesi_twitAnalizer/src/Analisis_V1/results/99_1/" + NUM_CONCEPTS + "_" + tweet.getAuthor() + ".txt");
+
+            System.out.println("=================================================");
+        }
+
+    }
+
 
     /**
      * Main method: compare the input tweet with che corpus of documents and returns a
-     * vector vith the result scores.
+     * vector with the result scores.
      *
      * @param corpus the document corpus
      * @param tweet the tweet we are considering
@@ -67,7 +101,7 @@ public class MainTweetComparator {
      * @param corpus corpus vector
      * @return the sorted corpus by cosine distance score.
      */
-    private static Vector<CorpusObject> cosineDistance(Vector<Double> tweetVector, Vector<CorpusObject> corpus){
+    private static Vector<CorpusObject> calculateCosineDistance(Vector<Double> tweetVector, Vector<CorpusObject> corpus){
         double dotProduct = 0.0;
         double normA = 0.0;
         double normB = 0.0;
@@ -99,11 +133,11 @@ public class MainTweetComparator {
 
         int i = 0;
         for (Map.Entry<CorpusObject, Double> entry : list) {
-            if(i < accouracy ) {
+            if(i < accouracy-1 ) {
                 res.add(entry.getKey());
                 i++;
             }
-            else break;
+            else if(entry.getKey().path.endsWith("target.txt")){ res.add(entry.getKey()); }
         }
         return res;
     }
@@ -115,7 +149,6 @@ public class MainTweetComparator {
             StringBuilder r = new StringBuilder();
             for(int i = res.size() - 1; i >= 0; i--){
                 r.append(res.get(i));
-                System.out.println(res.get(i).getCorpusObject().getConcepts()+"\n");
             }
 
             bw.write(r.toString());
@@ -124,35 +157,5 @@ public class MainTweetComparator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        Vector<CorpusObject> corpus;
-        long start = System.currentTimeMillis();
-
-        //TODO: implementare tweet reader
-        TweetReader tweetReader = new TweetReader();
-        Tweet tweet = tweetReader.readTweet("vaccini,i presidi alla Camera: 'Ritirare emendamento ke rinvia esclusione.Se passa abbiamo x qst'anno scolastico 1 rischio di insicurezza x la salute Cari provax siete proprio convinti ke siano i non vaccinati a mettere a repentaglio la sicurezza dei vs figli a scuola?￼");
-
-        //CorpusManager corpusManager = new CorpusManager(corpusPath, tempPath, Language.IT);
-        CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus_press_99_1.json");
-
-        //corpusManager.printLostWords();
-
-        corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
-        Vector<CorpusObject> c2 = cosineDistance(tweet.getConceptNetVector(), corpus);
-
-
-        System.out.println("Waiting for results...");
-        Vector<ResultObject> res = compare(c2, tweet.getConceptsID());
-
-        elapsedTimeMillis += System.currentTimeMillis() - start;
-        System.out.println("\n##### Best Similarity found in "+ elapsedTimeMillis / 1000+" second #####\n");
-
-        res.sort(Comparator.comparingDouble(ResultObject::getScore));
-        //System.out.println(res.get(res.size()-1).getContentString());
-
-        writeResults(res, "/Users/mac/IdeaProjects/Tesi_twitAnalizer/src/Analisis_V1/results/99_1/"+NUM_CONCEPTS+"_"+PRESS_ACCOURACY+".txt");
-
     }
 }

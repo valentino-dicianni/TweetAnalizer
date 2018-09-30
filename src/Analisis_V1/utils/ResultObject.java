@@ -25,7 +25,7 @@ public class ResultObject {
 
     @Override
     public String toString() {
-        return corpusObject.path.substring(18) + " & " + score+"\n";
+        return corpusObject.path.substring(18) + " & " + score+"\\\\ \n";
     }
 
 
