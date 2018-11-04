@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class TweetReader {
+    public int numTweets = 0;
     private ArrayList<Tweet> tweets = new ArrayList<>();
     private BabelNetIDsUtility bbfy = new BabelNetIDsUtility(Language.IT);
     private int index = 0;
@@ -18,6 +19,7 @@ public class TweetReader {
 
     public TweetReader(String path){
         parseFile(path);
+        numTweets = tweets.size();
     }
 
 
