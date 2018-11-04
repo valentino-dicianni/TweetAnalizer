@@ -18,6 +18,14 @@ public class GroundInterface {
     private static HashMap<String, Double> bids_to_ttcs_similarity = new HashMap<>();
     private static HashMap<String, Integer> lostWordsPerSentence = new HashMap<>();
 
+
+    /**
+     * Main method: it executes a command on Ground server. Connect to server
+     * with specified credentials and lunches the command passed by parameter.
+     *
+     * @param cmd the command to execute
+     * @return the string result from the command line
+     */
     private static String launch(String cmd) {
         String usr = "vdicianni";
         String psswd = "Tavol15pork1";
@@ -55,6 +63,14 @@ public class GroundInterface {
         return sb != null ? sb.toString() : null;
     }
 
+    /**
+     * Set Conceptnet execution command, lunch it on ground server
+     * and analise results.
+     *
+     * @param path lost_word file path
+     * @param sentence argument to ConceptNet call
+     * @return return a vector media calculated by ConceptNet
+     */
     public static Vector<Double> getConceptNetVector(String path, String sentence){
         String args = sentence.replaceAll("  ", " ")
                 .replaceAll("[^a-zA-Z0-9òàèùì]+"," ")
@@ -78,6 +94,16 @@ public class GroundInterface {
         return calculateVectorMedia(path, json_vector);
     }
 
+
+    /**
+     * Calculate the media vector of the string in input. The input string
+     * represents a vector of conceptNet 300-dimension vectors.
+     * It also generate the lost_words log file.
+     *
+     * @param path lost_word file path
+     * @param json_vector vector of conceptNet 300-dimension vectors in json format
+     * @return the media vector
+     */
     private static Vector<Double> calculateVectorMedia(String path, String json_vector){
         Vector<Double> tempVector = new Vector<>();
         Vector<Double> conceptNetVector = null;

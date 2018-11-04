@@ -249,7 +249,6 @@ public class CorpusManager {
      * @param n is the number of concepts taken into consideration
      * @return the new limited corpus
      */
-    //TODO: la copia non funziona..perchè il corpusObj ha le reference al corpus
     public Vector<CorpusObject>  setLimitConcepts(int n) {
 
         for (CorpusObject co : corpus) {
@@ -312,6 +311,9 @@ public class CorpusManager {
         }
     }
 
+    /**
+     * Print the lost-words log file, with words not found on ConceptNet
+     */
     public void printLostWords(){
         String eol = System.getProperty("line.separator");
 

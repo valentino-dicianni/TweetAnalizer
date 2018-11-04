@@ -15,7 +15,7 @@ public class BbTest {
         BabelNetIDsUtility bbnet = new BabelNetIDsUtility(Language.IT);
 
 
-        Vector<Concept> v = bbnet.executePost("Una giapponese di 36 anni, residente a Firenze, ha denunciato ai carabinieri di esser stata aggredita sabato mattina mentre faceva jogging nel parco di Varlungo, alla periferia sud del capoluogo toscano. L'aggressione, secondo il suo racconto, sarebbe avvenuta intorno alle 5.30 da parte di un uomo di origini asiatiche. La donna avrebbe anche perso conoscenza. Le indagini dei carabinieri della compagnia Oltrarno e del nucleo investigativo del Comando provinciale prendono in considerazione anche l'ipotesi di violenza sessuale. La giapponese è stata ricoverata presso l'ospedale Santissima Annunziata di Ponte a Niccheri con tumefazioni al viso. Nell'aggressione le è stato portato via il cellulare. ");
+        Vector<Concept> v = bbnet.executePost("L’adozione delle politiche di austerità nel sistema sanitario italiano è significativamente associata a una diminuzione dei tassi di vaccinazione per morbillo, parotite e rosolia.\n");
         System.out.println(v);
 
         System.out.println("\n------\n");

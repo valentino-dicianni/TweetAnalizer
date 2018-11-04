@@ -10,25 +10,30 @@ import java.util.*;
 public class MainTweetComparator {
 
     private static long elapsedTimeMillis;
-    private final static int NUM_CONCEPTS = 20;
-    private final static int PRESS_ACCOURACY = 10;
+    private final static int NUM_CONCEPTS = 10;
+    private final static int PRESS_ACCOURACY = 20;
     private final static String corpusPath = "corpus/press_99_1/";
+    public static Tweet tweet;
 
 
     public static void main(String[] args) {
         Vector<CorpusObject> corpus;
 
-        TweetReader tweetReader = new TweetReader("corpus/testTweets_99_1");
+        TweetReader tweetReader = new TweetReader("corpus/testTweets");
 
         for(int i = 0; i < tweetReader.numTweets; i++) {
             long start = System.currentTimeMillis();
             System.out.println("### Starting analysis n°"+(i+1)+" ###");
 
-            Tweet tweet = tweetReader.readTweet();
+            tweet = tweetReader.readTweet();
 
-            //CorpusManager corpusManager = new CorpusManager(corpusPath+tweet.getAuthor()+"/", corpusPath+tweet.getAuthor()+"/temp/", Language.IT);
-            CorpusManager corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus_press_99_1"+tweet.getAuthor()+".json");
+            CorpusManager corpusManager;
 
+            corpusManager = new CorpusManager(corpusPath, corpusPath+"temp/", Language.IT);
+
+            //corpusManager = new CorpusManager("corpus/JSONcorpus/jsonCorpus_press_99_1"+tweet.getAuthor()+".json");
+
+            corpusManager.printLostWords();
             corpus = corpusManager.setLimitConcepts(NUM_CONCEPTS);
             Vector<CorpusObject> c2 = calculateCosineDistance(tweet.getConceptNetVector(), corpus);
 
@@ -41,7 +46,7 @@ public class MainTweetComparator {
 
             res.sort(Comparator.comparingDouble(ResultObject::getScore));
 
-            writeResults(res, "/Users/mac/IdeaProjects/Tesi_twitAnalizer/src/Analisis_V1/results/99_1/" + NUM_CONCEPTS + "_" + tweet.getAuthor() + ".txt");
+            writeResults(res, "/Users/mac/IdeaProjects/Tesi_twitAnalizer/src/Analisis_V1/results/90_10/" + PRESS_ACCOURACY + "P_" + tweet.getAuthor() + ".txt");
 
             System.out.println("=================================================");
         }
@@ -126,14 +131,23 @@ public class MainTweetComparator {
 
     }
 
-    private static Vector<CorpusObject> sortByValue(Map<CorpusObject, Double> unsortMap, int accouracy) {
+
+    /***
+     * Sort results by score and return a sorted corpus according to the accuracy passed by
+     * parameter.
+     *
+     * @param unsortMap unsorted HashMap containing {@code CorpusObject}  and score
+     * @param accuracy indicates the number of document to return
+     * @return a new corpus sorted by score
+     */
+    private static Vector<CorpusObject> sortByValue(Map<CorpusObject, Double> unsortMap, int accuracy) {
         List<Map.Entry<CorpusObject, Double>> list = new LinkedList<>(unsortMap.entrySet());
         list.sort(Comparator.comparing(o -> (o.getValue())));
         Vector<CorpusObject> res = new Vector<>();
 
         int i = 0;
         for (Map.Entry<CorpusObject, Double> entry : list) {
-            if(i < accouracy-1 ) {
+            if(i < accuracy-1 ) {
                 res.add(entry.getKey());
                 i++;
             }
@@ -142,6 +156,12 @@ public class MainTweetComparator {
         return res;
     }
 
+    /**
+     * Utility that writes the results to a specified file path.
+     *
+     * @param res vector of {@code ResultObject}
+     * @param path destination file path
+     */
     private static void writeResults(Vector<ResultObject> res, String path){
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path));

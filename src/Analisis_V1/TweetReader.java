@@ -10,18 +10,17 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class TweetReader {
-    public int numTweets = 0;
     private ArrayList<Tweet> tweets = new ArrayList<>();
     private BabelNetIDsUtility bbfy = new BabelNetIDsUtility(Language.IT);
     private int index = 0;
 
 
 
-
     public TweetReader(String path){
         parseFile(path);
-        numTweets = tweets.size();
     }
+
+
     /**
      * Parse the input tweets file and returns a set of tweets, deleting all double tweets,
      * and useless file parts.
@@ -52,6 +51,27 @@ public class TweetReader {
     }
 
 
+    /**
+     * Read a parsed tweet and assign conceptNet Vector and BabelNet IDs
+     *
+     * @return return the new tweet object
+     */
+    public Tweet readTweet(){
+        if(index < tweets.size()){
+            Tweet tw =  tweets.get(index);
+            tw.setConceptNetVector(GroundInterface.getConceptNetVector("", tw.getContent()));
+            tw.setConceptsID(getIDsFromTweet(tw.getContent()));
+            index++;
+            return tw;
+        }
+        return null;
+    }
+
+    /**
+     * Execute babelfy on input tweet and returns IDs
+     * @param tweet input tweet
+     * @return IDs vector
+     */
     private Vector<String> getIDsFromTweet(String tweet){
         Vector<Concept> concepts = bbfy.executePost(tweet);
         Vector<String> ids = new Vector<>();
@@ -63,15 +83,6 @@ public class TweetReader {
     }
 
 
-    public Tweet readTweet(){
-        if(index < tweets.size()){
-            Tweet tw =  tweets.get(index);
-            tw.setConceptNetVector(GroundInterface.getConceptNetVector("", tw.getContent()));
-            tw.setConceptsID(getIDsFromTweet(tw.getContent()));
-            index++;
-            return tw;
-        }
-        return null;
-    }
+
 
 }
